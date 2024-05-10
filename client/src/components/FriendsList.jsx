@@ -8,7 +8,7 @@ function FriendsList() {
         {DUMMY_USERS.map((user) => (
           <div
             key={user.username}
-            className="flex gap-2 p-2 rounded hover:bg-slate-100">
+            className="flex gap-4 p-2 rounded hover:bg-slate-100">
             <img src={user.image} alt="user image" className="w-12" />
             <div className="flex flex-col justify-center ">
               <p className="">{user.username}</p>
