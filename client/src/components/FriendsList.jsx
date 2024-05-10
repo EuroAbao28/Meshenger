@@ -10,9 +10,9 @@ function FriendsList() {
             key={user.username}
             className="flex gap-2 p-2 rounded hover:bg-slate-100">
             <img src={user.image} alt="user image" className="w-12" />
-            <div className="flex flex-col">
-              <p className="font-semibold">{user.username}</p>
-              <p className="-mt-1 font-light">Latest message here.</p>
+            <div className="flex flex-col justify-center ">
+              <p className="">{user.username}</p>
+              <p className="-mt-1 text-sm font-light">Latest message here.</p>
             </div>
           </div>
         ))}
