@@ -5,10 +5,12 @@ import { LuChevronLeft, LuUser, LuSettings, LuLogOut } from "react-icons/lu";
 import user from "../assets/user.png";
 import logo from "../assets/logo.png";
 import { SIDEMENU_LINKS } from "../constants/sideNav";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SideMenu() {
   const { isSideMenuOpen, setIsSideMenuOpen } = useStatesContext();
+
+  const navigate = useNavigate();
   return (
     <>
       {/* backdrop */}
@@ -50,7 +52,9 @@ function SideMenu() {
             </Link>
           ))}
 
-          <div className="flex items-center gap-4 px-3 py-2 text-lg hover:bg-slate-50">
+          <div
+            onClick={() => navigate("/login")}
+            className="flex items-center gap-4 px-3 py-2 text-lg cursor-pointer hover:bg-slate-50">
             <LuLogOut className="text-xl" />
             Logout
           </div>

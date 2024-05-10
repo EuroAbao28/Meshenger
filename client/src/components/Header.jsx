@@ -12,7 +12,7 @@ function Header() {
       <div className="flex items-center justify-between p-4 ">
         <LuMenu
           onClick={() => setIsSideMenuOpen(true)}
-          className="mr-2 text-2xl cursor-pointer text-slate-700 sm:hidden"
+          className="mr-2 text-2xl cursor-pointer sm:hidden"
         />
         <h1 className="mr-auto text-2xl font-bold md:mr-0 ">Chats</h1>
 
