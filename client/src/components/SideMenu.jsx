@@ -32,7 +32,7 @@ function SideMenu() {
             <img className="w-10" src={user} alt="" />
             <div className="flex flex-col">
               <p className="text-lg font-semibold ">Orue Abao</p>
-              <p className="-mt-2 text-sky-500">euro@gmail.com</p>
+              <p className="-mt-1 text-sm text-sky-500">euro@gmail.com</p>
             </div>
           </div>
           <LuChevronLeft
