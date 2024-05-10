@@ -6,7 +6,7 @@ function Login() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative flex items-center justify-center w-screen h-screen text-slate-700">
+    <div className="relative flex items-center justify-center w-screen h-svh text-slate-700">
       <form onSubmit={() => navigate("/")} className="w-full max-w-sm mx-6">
         <div className="flex items-center justify-center gap-2 mb-8 ">
           <img className="w-10" src={logo} alt="logo" />
