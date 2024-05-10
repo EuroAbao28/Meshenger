@@ -15,13 +15,13 @@ function SideMenu() {
       {isSideMenuOpen && (
         <div
           onClick={() => setIsSideMenuOpen(false)}
-          className="absolute top-0 bottom-0 left-0 right-0 bg-black/10 sm:hidden"></div>
+          className="absolute top-0 bottom-0 left-0 right-0 z-10 bg-black/10 sm:hidden"></div>
       )}
 
       {/*  sidemenu for small screen */}
       <div
         className={classnames(
-          " bg-white sm:relative absolute  top-0 bottom-0 transition-all overflow-hidden p-4 sm:hidden w-4/5 ease-in-out duration-300",
+          " bg-white sm:relative absolute z-20 top-0 bottom-0 transition-all overflow-hidden p-4 sm:hidden w-4/5 ease-in-out duration-300",
           {
             "left-0": isSideMenuOpen,
             "-left-full": !isSideMenuOpen,
