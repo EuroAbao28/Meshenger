@@ -9,7 +9,7 @@ function Header() {
 
   return (
     <>
-      <div className="flex items-center justify-between p-4 shadow-sm">
+      <div className="flex items-center justify-between p-4 ">
         <LuMenu
           onClick={() => setIsSideMenuOpen(true)}
           className="mr-2 text-2xl cursor-pointer text-slate-700 sm:hidden"
