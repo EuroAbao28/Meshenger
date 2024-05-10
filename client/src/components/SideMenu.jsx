@@ -28,9 +28,12 @@ function SideMenu() {
           }
         )}>
         <div className="flex items-center justify-between ">
-          <div className="flex items-center gap-4 text-lg font-semibold">
+          <div className="flex items-center gap-4">
             <img className="w-10" src={user} alt="" />
-            <p>Orue Abao</p>
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold ">Orue Abao</p>
+              <p className="-mt-2 text-sky-500">euro@gmail.com</p>
+            </div>
           </div>
           <LuChevronLeft
             onClick={() => setIsSideMenuOpen(false)}
