@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import SideMenu from "../components/SideMenu";
 import { LuSearch } from "react-icons/lu";
+import FriendsList from "../components/FriendsList";
 
 function Layout() {
   return (
@@ -9,7 +10,7 @@ function Layout() {
       <SideMenu />
 
       {/* container for flex-1 */}
-      <div className="flex-1 ">
+      <div className="flex flex-col flex-1">
         <Header />
 
         {/* search bar */}
@@ -23,9 +24,10 @@ function Layout() {
         </div>
 
         {/* flex container */}
-        <div className="flex justify-between p-4">
-          <div>friends list</div>
-          <div>chats</div>
+        <div className="flex justify-between flex-1 mt-4">
+          <FriendsList />
+
+          <div className="hidden bg-red-200 md:flex md:w-full">chats</div>
         </div>
       </div>
     </div>
