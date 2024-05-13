@@ -17,13 +17,13 @@ function SideMenu() {
       {isSideMenuOpen && (
         <div
           onClick={() => setIsSideMenuOpen(false)}
-          className="absolute top-0 bottom-0 left-0 right-0 z-10 bg-black/10 sm:hidden"></div>
+          className="absolute top-0 bottom-0 left-0 right-0 z-10 bg-black/10 md:hidden"></div>
       )}
 
       {/*  sidemenu for small screen */}
       <div
         className={classnames(
-          " bg-white sm:relative absolute z-20 top-0 bottom-0 transition-all overflow-hidden p-4 sm:hidden w-4/5 ease-in-out duration-300",
+          " bg-white md:relative absolute z-20 top-0 bottom-0 transition-all overflow-hidden p-4 md:hidden  w-4/5   ease-in-out duration-300 sm:max-lg:w-2/5 ",
           {
             "left-0": isSideMenuOpen,
             "-left-full": !isSideMenuOpen,
@@ -62,7 +62,7 @@ function SideMenu() {
       </div>
 
       {/* side menu for big screen */}
-      <div className="flex-col items-center hidden p-3 text-3xl text-sky-600/70 sm:flex bg-sky-100 ">
+      <div className="flex-col items-center hidden p-3 text-3xl text-sky-600/70 md:flex bg-sky-100 ">
         <img className="w-10 mb-6" src={logo} alt="" />
         {SIDEMENU_LINKS.map((item) => (
           <Link key={item.label} className="p-3 hover:bg-slate-50">

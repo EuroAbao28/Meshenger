@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Layout from "./pages/Layout";
 import { StatesProvider } from "./context/StatesContextProvider";
+import Conversation from "./pages/Conversation";
+import Welcome from "./pages/Welcome";
 
 function App() {
   return (
@@ -16,7 +18,10 @@ function App() {
       <StatesProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<Layout />}></Route>
+            <Route path="/" element={<Layout />}>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/:id" element={<Conversation />} />
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>

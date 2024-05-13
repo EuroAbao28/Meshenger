@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import SideMenu from "../components/SideMenu";
 import { LuSearch } from "react-icons/lu";
 import FriendsList from "../components/FriendsList";
+import { Outlet } from "react-router-dom";
 
 function Layout() {
   return (
@@ -14,7 +15,7 @@ function Layout() {
         <Header />
 
         {/* search bar */}
-        <div className="flex items-center mx-4 rounded-full md:hidden outline outline-1 outline-slate-300 focus-within:outline-2 focus-within:outline-sky-300">
+        <div className="flex items-center mx-4 mb-4 rounded-full md:hidden outline outline-1 outline-slate-300 focus-within:outline-2 focus-within:outline-sky-300">
           <LuSearch className="ml-4 text-xl text-slate-500" />
           <input
             type="text"
@@ -24,10 +25,10 @@ function Layout() {
         </div>
 
         {/* flex container */}
-        <div className="flex justify-between flex-1 mt-4">
+        <div className="relative flex justify-between flex-1">
           <FriendsList />
 
-          <div className="hidden bg-red-200 md:flex md:w-full">chats</div>
+          <Outlet />
         </div>
       </div>
     </div>
