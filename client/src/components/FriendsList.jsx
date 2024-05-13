@@ -9,7 +9,7 @@ function FriendsList() {
   const { setIsSideMenuOpen } = useStatesContext();
 
   return (
-    <div className="w-full md:w-[18rem] lg:w-[24rem] bg-white shadow-sm rounded-lg flex flex-col">
+    <div className="w-full md:w-[20rem] lg:w-[24rem] bg-white shadow-sm rounded-lg flex flex-col">
       {/* header */}
       <div className="flex items-center justify-between gap-2 p-4">
         <LuMenu

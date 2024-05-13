@@ -3,9 +3,12 @@ import classnames from "classnames";
 import { useStatesContext } from "../context/StatesContextProvider";
 import userImage from "../assets/user.png";
 import { LuUser, LuSettings2, LuLogOut } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
 function SideMenu() {
   const { isSideMenuOpen, setIsSideMenuOpen } = useStatesContext();
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -42,7 +45,9 @@ function SideMenu() {
           Settings
         </div>
 
-        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-50">
+        <div
+          onClick={() => navigate("/login")}
+          className="flex items-center gap-4 p-2 text-red-500 rounded cursor-pointer hover:bg-slate-50">
           <LuLogOut className="text-lg" />
           Logout
         </div>
