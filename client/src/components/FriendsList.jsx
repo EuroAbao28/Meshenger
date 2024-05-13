@@ -38,8 +38,8 @@ function FriendsList() {
               className="flex items-center gap-4 p-2 hover:bg-sky-50">
               <img src={user.image} alt="user image" className="w-10" />
               <div className="flex-1">
-                <h3 className="font-semibold">{user.username}</h3>
-                <p className="text-sm">Lastest message here</p>
+                <h3 className="">{user.username}</h3>
+                <p className="text-sm font-light">Lastest message here</p>
               </div>
             </div>
           ))}

@@ -11,7 +11,7 @@ function SideMenu() {
     <>
       <div
         onClick={() => setIsSideMenuOpen(false)}
-        className={classnames("absolute inset-0 z-10 bg-black/30", {
+        className={classnames("absolute inset-0 z-10 bg-black/20", {
           block: isSideMenuOpen,
           hidden: !isSideMenuOpen,
         })}></div>
