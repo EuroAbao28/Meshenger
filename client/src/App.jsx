@@ -9,8 +9,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Layout from "./pages/Layout";
 import { StatesProvider } from "./context/StatesContextProvider";
-import Conversation from "./pages/Conversation";
 import Welcome from "./pages/Welcome";
+import Conversation from "./pages/Conversation";
 
 function App() {
   return (
