@@ -21,7 +21,7 @@ function FriendsList() {
 
       {/* search bar */}
       <form className="flex items-center gap-3 px-4 py-2 mx-4 mb-4 bg-white rounded-full outline outline-1 focus-within:outline-sky-500 outline-slate-300">
-        <LuSearch />
+        <LuSearch className="text-slate-300" />
         <input
           type="text"
           placeholder="Search a user"
