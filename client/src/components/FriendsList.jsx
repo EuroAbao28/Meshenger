@@ -3,6 +3,7 @@ import { LuMenu, LuSearch } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { DUMMY_USERS } from "../constants/dummyUser";
 import { useStatesContext } from "../context/StatesContextProvider";
+import logo from "../assets/logo.png";
 
 function FriendsList() {
   const { setIsSideMenuOpen } = useStatesContext();
@@ -15,7 +16,10 @@ function FriendsList() {
           onClick={() => setIsSideMenuOpen(true)}
           className="text-2xl transition-all cursor-pointer active:scale-95"
         />
-        <h1 className="mr-auto text-xl font-bold">Meshenger</h1>
+        <div className="flex items-center gap-2">
+          <img src={logo} alt="logo" className="w-6 " />
+          <h1 className="text-2xl font-bold ">Meshenger</h1>
+        </div>
         <img src={userImage} alt="image" className="w-10" />
       </div>
 
