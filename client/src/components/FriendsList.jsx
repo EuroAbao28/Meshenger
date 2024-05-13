@@ -38,7 +38,7 @@ function FriendsList() {
               className="flex items-center gap-4 p-2 hover:bg-sky-50">
               <div className="relative">
                 <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
-                <img src={user.image} alt="user image" className="w-10" />
+                <img src={user.image} alt="user image" className="w-12" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold line-clamp-1">{user.username}</h3>
