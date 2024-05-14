@@ -28,7 +28,11 @@ function SideMenu() {
           }
         )}>
         <div className="flex gap-3 mb-4">
-          <img src={userImage} alt="user image" className="w-10" />
+          <img
+            src={userImage}
+            alt="user image"
+            className="w-12 aspect-square"
+          />
           <div className="flex-1">
             <h3 className="font-semibold">Orue Abao</h3>
             <p className="-mt-1 text-sm text-sky-500">orue2002@gmail.com</p>

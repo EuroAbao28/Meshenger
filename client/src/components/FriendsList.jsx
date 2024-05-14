@@ -4,9 +4,12 @@ import userImage from "../assets/user.png";
 import { DUMMY_USERS } from "../constants/dummyUser";
 import { useStatesContext } from "../context/StatesContextProvider";
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 function FriendsList() {
   const { setIsSideMenuOpen } = useStatesContext();
+
+  const navigate = useNavigate();
 
   return (
     <div className="w-full md:w-[20rem] lg:w-[24rem] bg-white shadow-sm rounded-lg flex flex-col">
@@ -38,8 +41,9 @@ function FriendsList() {
         <div className="absolute inset-0 p-2 overflow-y-auto">
           {DUMMY_USERS.map((user) => (
             <div
+              onClick={() => navigate("/999")}
               key={user.username}
-              className="flex items-center gap-4 p-2 hover:bg-sky-50">
+              className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
               <div className="relative">
                 <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
                 <img src={user.image} alt="user image" className="w-12" />
