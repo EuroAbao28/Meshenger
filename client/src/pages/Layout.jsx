@@ -8,7 +8,7 @@ function Layout() {
 
   console.log(id);
   return (
-    <div className="relative flex gap-4 md:p-4 h-svh text-slate-700 bg-slate-100">
+    <div className="flex gap-4  md:p-4 h-svh text-slate-700 bg-slate-100">
       <FriendsList isIdParamsValid={id} />
 
       {/* side menu */}
