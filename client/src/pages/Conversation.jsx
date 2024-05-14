@@ -29,7 +29,7 @@ function Conversation() {
             placeholder="Write a mesage"
             className="flex-1 px-4 py-2 rounded-full outline outline-1 focus-within:outline-sky-500 outline-slate-300"
           />
-          <div className="flex items-center justify-center w-10 text-lg text-white rounded-full aspect-square bg-sky-500">
+          <div className="flex items-center justify-center w-10 text-lg text-white bg-red-500 rounded-full aspect-square">
             <BiSolidSend />
           </div>
         </form>
