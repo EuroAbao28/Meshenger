@@ -14,14 +14,14 @@ function SideMenu() {
     <>
       <div
         onClick={() => setIsSideMenuOpen(false)}
-        className={classnames("absolute inset-0 z-10 bg-black/20", {
+        className={classnames("absolute inset-0 -z-40 bg-black/20", {
           block: isSideMenuOpen,
           hidden: !isSideMenuOpen,
         })}></div>
 
       <div
         className={classnames(
-          "absolute inset-0 w-4/5 z-20 transition-all bg-white duration-500 flex flex-col ease-in-out sm:w-2/5 md:w-[20rem] p-4",
+          "absolute inset-0 w-4/5 z-50 transition-all bg-white duration-500 flex flex-col ease-in-out sm:w-2/5 md:w-[20rem] p-4",
           {
             "-left-full": !isSideMenuOpen,
             "left-0": isSideMenuOpen,
