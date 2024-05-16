@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Layout from "./pages/Layout";
+import Layout from "./components/Layout";
 import { StatesProvider } from "./context/StatesContextProvider";
 import Welcome from "./pages/Welcome";
 import Conversation from "./pages/Conversation";

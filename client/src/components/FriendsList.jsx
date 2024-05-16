@@ -6,15 +6,13 @@ import { useStatesContext } from "../context/StatesContextProvider";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 
-function FriendsList({ isIdParamsValid }) {
+function FriendsList() {
   const { setIsSideMenuOpen } = useStatesContext();
 
   const navigate = useNavigate();
 
-  console.log("friends", isIdParamsValid);
-
   return (
-    <div className="w-full md:w-[20rem] lg:w-[24rem] bg-white shadow-sm rounded-lg flex flex-col">
+    <div className="flex flex-col bg-white rounded-lg shadow-sm">
       {/* header */}
       <div className="flex items-center justify-between gap-2 p-4">
         <LuMenu
