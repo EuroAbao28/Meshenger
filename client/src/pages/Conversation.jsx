@@ -9,7 +9,7 @@ function Conversation() {
   const navigate = useNavigate();
 
   return (
-    <div className="z-10 flex flex-col w-screen h-screen bg-white md:rounded-lg">
+    <div className="z-10 flex flex-col h-full bg-white sm:h-svh md:rounded-lg">
       {/* header */}
       <div className="flex items-center gap-4 p-4 border-b-4 border-slate-100">
         <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
