@@ -10,6 +10,11 @@ function SideMenu() {
 
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    setIsSideMenuOpen(false);
+    navigate("/login");
+  };
+
   return (
     <>
       <div
@@ -50,7 +55,7 @@ function SideMenu() {
         </div>
 
         <div
-          onClick={() => navigate("/login")}
+          onClick={handleLogout}
           className="flex items-center gap-4 p-2 text-red-500 rounded cursor-pointer hover:bg-slate-50">
           <LuLogOut className="text-lg" />
           Logout

@@ -5,6 +5,7 @@ export default {
     extend: {
       gridTemplateColumns: {
         noFriendsList: "0 1fr",
+        noConversation: "1fr 0",
         "20rem": "20rem 1fr",
         "24rem": "24rem 1fr",
       },

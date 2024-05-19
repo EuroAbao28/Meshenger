@@ -2,6 +2,7 @@ import React from "react";
 import FriendsList from "./FriendsList";
 import { Outlet, useParams } from "react-router-dom";
 import SideMenu from "./SideMenu";
+import classNames from "classnames";
 
 function Layout() {
   const { id } = useParams();
@@ -9,7 +10,14 @@ function Layout() {
   console.log(id);
   return (
     <>
-      <div className="grid grid-rows-1 gap-0 md:gap-4 md:grid-cols-20rem grid-cols-noFriendsList lg:grid-cols-24rem md:p-4 h-svh text-slate-700 bg-slate-100">
+      <div
+        className={classNames(
+          "grid grid-rows-1 gap-0 md:gap-4 md:grid-cols-20rem lg:grid-cols-24rem md:p-4 h-svh text-slate-700 bg-slate-100",
+          {
+            "grid-cols-noFriendsList": id,
+            "grid-cols-noConversation": !id,
+          }
+        )}>
         <FriendsList />
 
         {/* side menu */}

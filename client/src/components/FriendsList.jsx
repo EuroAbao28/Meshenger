@@ -1,5 +1,5 @@
 import React from "react";
-import { LuMenu, LuSearch } from "react-icons/lu";
+import { LuMenu, LuSearch, LuBell } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { DUMMY_USERS } from "../constants/dummyUser";
 import { useStatesContext } from "../context/StatesContextProvider";
@@ -15,15 +15,20 @@ function FriendsList() {
     <div className="flex flex-col bg-white rounded-lg shadow-sm">
       {/* header */}
       <div className="flex items-center justify-between gap-2 p-4">
-        <LuMenu
-          onClick={() => setIsSideMenuOpen(true)}
-          className="text-2xl transition-all cursor-pointer active:scale-95"
-        />
+        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
+          <LuMenu
+            className="text-2xl"
+            onClick={() => setIsSideMenuOpen(true)}
+          />
+        </div>
         <div className="flex items-center gap-2">
           <img src={logo} alt="logo" className="w-6 " />
           <h1 className="text-2xl font-bold ">Meshenger</h1>
         </div>
-        <img src={userImage} alt="image" className="w-10" />
+        {/* <img src={userImage} alt="image" className="w-10" /> */}
+        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100   ">
+          <LuBell className="text-2xl" />
+        </div>
       </div>
 
       {/* search bar */}

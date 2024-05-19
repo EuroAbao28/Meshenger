@@ -1,5 +1,5 @@
 import React from "react";
-import { BsFillEmojiSmileFill } from "react-icons/bs";
+import { BsFillEmojiSmileFill, BsThreeDotsVertical } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
 import { LuArrowLeft } from "react-icons/lu";
 import userImage from "../assets/user.png";
@@ -11,13 +11,18 @@ function Conversation() {
   return (
     <div className="z-10 flex flex-col bg-white h-svh sm:h-full md:rounded-lg">
       {/* header */}
-      <div className="flex items-center gap-4 p-4 border-b-4 border-slate-100">
-        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
+      <div className="flex items-center justify-between gap-2  p-4 border-b-4 border-slate-100">
+        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100  md:hidden">
           <LuArrowLeft className="text-2xl" onClick={() => navigate("/")} />
         </div>
-        <div className="flex items-center">
+
+        <div className="flex items-center gap-4 mr-auto">
           <img src={userImage} alt="user image" className="w-10" />
-          <h3>Astrii Claude</h3>
+          <h3 className="font-semibold text-lg">Astrii Claude</h3>
+        </div>
+
+        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100  ">
+          <BsThreeDotsVertical className="text-2xl" />
         </div>
       </div>
 
