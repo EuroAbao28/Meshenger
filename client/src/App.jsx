@@ -11,11 +11,14 @@ import Layout from "./components/Layout";
 import { StatesProvider } from "./context/StatesContextProvider";
 import Welcome from "./pages/Welcome";
 import Conversation from "./pages/Conversation";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <>
       <StatesProvider>
+        <Toaster position="top-right" />
+
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>

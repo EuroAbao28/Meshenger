@@ -42,10 +42,6 @@ export const DUMMY_USERS = [
     image: userImage,
   },
   {
-    username: "Edward Elric",
-    image: userImage,
-  },
-  {
     username: "Light Yagami",
     image: userImage,
   },
