@@ -67,8 +67,15 @@ function Login() {
         />
         <button
           type="submit"
-          className="w-full px-4 py-2 mt-6 font-semibold text-white transition-all rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2 bg-sky-500 active:bg-sky-600">
-          Login
+          className="flex items-center justify-center w-full gap-2 px-4 py-2 mt-6 font-semibold text-white transition-all rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2 bg-sky-500 active:bg-sky-600">
+          {isLoading ? (
+            <>
+              <span className="loading loading-spinner loading-sm"></span>
+              Logging in
+            </>
+          ) : (
+            "Login"
+          )}
         </button>
         <p className="mt-4 text-sm font-light text-center text-slate-500">
           Doesn't have an account?{" "}
@@ -82,7 +89,7 @@ function Login() {
 
       <div className="absolute flex flex-col items-center bottom-4 text-slate-500 ">
         <p className="-mb-1 text-sm font-semibold tracking-widest">Euro Abao</p>
-        <p className="text-xs font-light bg-white">Developed by</p>
+        <p className="text-xs font-light ">Developed by</p>
       </div>
     </div>
   );

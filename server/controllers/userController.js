@@ -69,4 +69,13 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signUp, login };
+const getLoggedInUser = async (req, res) => {
+  try {
+    return res.status(200).json({ message: "Valid user", user: req.user });
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
+};
+
+module.exports = { signUp, login, getLoggedInUser };

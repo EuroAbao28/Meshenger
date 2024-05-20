@@ -4,14 +4,22 @@ import { useStatesContext } from "../context/StatesContextProvider";
 import userImage from "../assets/user.png";
 import { LuUser, LuSettings2, LuLogOut } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../context/UserContextProvider";
+import toast from "react-hot-toast";
 
 function SideMenu() {
   const { isSideMenuOpen, setIsSideMenuOpen } = useStatesContext();
+  const { user } = useUserContext();
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
     setIsSideMenuOpen(false);
+
+    // remove userToken
+    localStorage.removeItem("userToken");
+
+    toast.success("Logged out succssfully");
     navigate("/login");
   };
 
@@ -39,8 +47,8 @@ function SideMenu() {
             className="w-12 aspect-square"
           />
           <div className="flex-1">
-            <h3 className="font-semibold">Orue Abao</h3>
-            <p className="-mt-1 text-sm text-sky-500">orue2002@gmail.com</p>
+            <h3 className="font-semibold">{`${user.firstname} ${user.lastname}`}</h3>
+            <p className="-mt-1 text-sm text-sky-500">{user.username}</p>
           </div>
         </div>
 
