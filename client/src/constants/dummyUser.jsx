@@ -2,47 +2,47 @@ import userImage from "../assets/user.png";
 
 export const DUMMY_USERS = [
   {
-    username: "Kevin Dela Cruz",
+    username: "Monkey D. Luffy",
     image: userImage,
   },
   {
-    username: "Jackie Marie Heronemo",
+    username: "Lelouch Lamperouge",
     image: userImage,
   },
   {
-    username: "Astrii Claude",
+    username: "Naruto Uzumaki",
     image: userImage,
   },
   {
-    username: "Boss Nico",
+    username: "Spike Spiegel",
     image: userImage,
   },
   {
-    username: "Juan Tamad",
+    username: "Levi Ackerman",
     image: userImage,
   },
   {
-    username: "Gie Anne",
+    username: "Roronoa Zoro",
     image: userImage,
   },
   {
-    username: "Rosana Dave",
+    username: "Satoru Gojo",
     image: userImage,
   },
   {
-    username: "Crazy Guy",
+    username: "Killua Zoldyck",
     image: userImage,
   },
   {
-    username: "Molly Drug",
+    username: "Shinji Ikari",
     image: userImage,
   },
   {
-    username: "Cartoon Character",
+    username: "Edward Elric",
     image: userImage,
   },
   {
-    username: "Jonathan Gaco",
+    username: "Edward Elric",
     image: userImage,
   },
   {
@@ -50,27 +50,27 @@ export const DUMMY_USERS = [
     image: userImage,
   },
   {
-    username: "One Piece",
+    username: "Tanjiro Kamado",
     image: userImage,
   },
   {
-    username: "Bryan Abuan",
+    username: "Mikasa Ackerman",
     image: userImage,
   },
   {
-    username: "Dhan Elizaga",
+    username: "Dio Brando",
     image: userImage,
   },
   {
-    username: "Ariel Santos",
+    username: "Eren Yeager",
     image: userImage,
   },
   {
-    username: "William Mercurio",
+    username: "Sailor Moon",
     image: userImage,
   },
   {
-    username: "Hansel Mendoza",
+    username: "Rimuru Tempest",
     image: userImage,
   },
 ];
