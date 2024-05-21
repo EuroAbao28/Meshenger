@@ -97,4 +97,21 @@ const searchUser = async (req, res) => {
   }
 };
 
-module.exports = { signUp, login, getLoggedInUser, searchUser };
+const getUserToChat = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) return res.status(400).json({ message: "No id params provided" });
+
+    const user = await userModel.findById(id);
+
+    if (!user) return res.status(404).json({ message: "No user found" });
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = { signUp, login, getLoggedInUser, searchUser, getUserToChat };

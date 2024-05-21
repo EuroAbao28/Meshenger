@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LuMenu, LuSearch, LuBell } from "react-icons/lu";
+import { LuMenu, LuSearch, LuBell, LuX } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { DUMMY_USERS } from "../constants/dummyUser";
 import { useStatesContext } from "../context/StatesContextProvider";
@@ -15,6 +15,26 @@ function FriendsList() {
   const { searchFunction, isSearchLoading } = useSearchUser();
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+
+  // search onChange
+  const handleOnChange = (e) => {
+    const { value } = e.target;
+    setSearchInput(value);
+
+    // if the input is empty, resset
+    if (value.length === 0) {
+      setShowResult(false);
+      setSearchResult([]);
+    }
+  };
+
+  //  resert searchInput
+  const handleResetSearchInput = () => {
+    setSearchInput("");
+    setShowResult(false);
+    setSearchResult([]);
+  };
 
   // search user
   const handleSearch = async (e) => {
@@ -26,6 +46,8 @@ function FriendsList() {
       const response = await searchFunction(searchInput);
 
       setSearchResult(response.data);
+      setShowResult(true);
+
       console.log(response.data);
     } catch (error) {
       toast.error(error);
@@ -58,17 +80,25 @@ function FriendsList() {
         className="flex items-center gap-3 px-4 py-2 mx-4 mb-4 bg-white rounded-full outline outline-1 focus-within:outline-sky-500 outline-slate-300">
         <LuSearch className="text-slate-700" />
         <input
+          name="searchInput"
           type="text"
           placeholder="Search a user"
           value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={handleOnChange}
           className="w-full focus:outline-none"
         />
+        {searchInput && (
+          <div
+            onClick={handleResetSearchInput}
+            className="rounded-full p-1 bg-slate-50 hover:bg-slate-100 cursor-pointer">
+            <LuX className="text-slate-500" />
+          </div>
+        )}
       </form>
 
       {/* friends list */}
       <div className="relative flex-1">
-        {!searchInput ? (
+        {!showResult ? (
           <div className="absolute inset-0 p-2 overflow-y-auto">
             {DUMMY_USERS.map((user) => (
               <div
@@ -93,23 +123,42 @@ function FriendsList() {
           </div>
         ) : (
           <div className="absolute inset-0 p-2 overflow-y-auto">
-            <p className="px-2 text-slate-400">Search result</p>
-            {searchResult.map((user) => (
-              <div
-                onClick={() => navigate("/999")}
-                key={user.username}
-                className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
-                <div className="relative">
-                  <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
-                  <img src={userImage} alt="user image" className="w-12" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold line-clamp-1">
-                    {user.username}
-                  </h3>
-                </div>
+            {isSearchLoading ? (
+              <div className="flex gap-2  items-center justify-center">
+                <span className="loading loading-spinner loading-xs"></span>
+                <p>Loading</p>
               </div>
-            ))}
+            ) : (
+              <>
+                {searchResult.length === 0 ? (
+                  <p className=" text-center">No user found</p>
+                ) : (
+                  <>
+                    <p className="px-2 text-slate-400">Search result</p>
+                    {searchResult.map((user) => (
+                      <div
+                        onClick={() => navigate(`/${user._id}`)}
+                        key={user.username}
+                        className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
+                        <div className="relative">
+                          <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                          <img
+                            src={userImage}
+                            alt="user image"
+                            className="w-12"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold line-clamp-1">
+                            {user.username}
+                          </h3>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>
