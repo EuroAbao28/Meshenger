@@ -42,7 +42,7 @@ const signUp = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.json(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -65,7 +65,7 @@ const login = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.json(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -74,8 +74,27 @@ const getLoggedInUser = async (req, res) => {
     return res.status(200).json({ message: "Valid user", user: req.user });
   } catch (error) {
     console.log(error);
-    return res.json(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-module.exports = { signUp, login, getLoggedInUser };
+const searchUser = async (req, res) => {
+  try {
+    const { searchInput } = req.query;
+
+    const response = await userModel.find({
+      $or: [
+        { username: { $regex: searchInput, $options: "i" } },
+        { firstname: { $regex: searchInput, $options: "i" } },
+        { lastname: { $regex: searchInput, $options: "i" } },
+      ],
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = { signUp, login, getLoggedInUser, searchUser };

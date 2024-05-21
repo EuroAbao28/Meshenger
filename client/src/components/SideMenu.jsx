@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 import { useStatesContext } from "../context/StatesContextProvider";
 import userImage from "../assets/user.png";
@@ -8,10 +8,10 @@ import { useUserContext } from "../context/UserContextProvider";
 import toast from "react-hot-toast";
 
 function SideMenu() {
-  const { isSideMenuOpen, setIsSideMenuOpen } = useStatesContext();
+  const navigate = useNavigate();
   const { user } = useUserContext();
 
-  const navigate = useNavigate();
+  const { isSideMenuOpen, setIsSideMenuOpen } = useStatesContext();
 
   const handleLogout = () => {
     setIsSideMenuOpen(false);
@@ -52,19 +52,19 @@ function SideMenu() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-50">
+        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100">
           <LuUser className="text-lg" />
           My Profile
         </div>
 
-        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-50">
+        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100">
           <LuSettings2 className="text-lg" />
           Settings
         </div>
 
         <div
           onClick={handleLogout}
-          className="flex items-center gap-4 p-2 text-red-500 rounded cursor-pointer hover:bg-slate-50">
+          className="flex items-center gap-4 p-2 text-red-500 rounded cursor-pointer hover:bg-slate-100">
           <LuLogOut className="text-lg" />
           Logout
         </div>
