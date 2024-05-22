@@ -100,6 +100,7 @@ function FriendsList() {
       <div className="relative flex-1">
         {!showResult ? (
           <div className="absolute inset-0 p-2 overflow-y-auto">
+            {/* fix this, with real user data */}
             {DUMMY_USERS.map((user) => (
               <div
                 onClick={() => navigate("/999")}
