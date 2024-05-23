@@ -143,6 +143,33 @@ const addToContact = async (req, res) => {
   }
 };
 
+const removeFromContact = async (req, res) => {
+  try {
+    const myId = req.user._id;
+    const { id } = req.params;
+
+    const currentUser = await userModel.findById(myId);
+    const otherUser = await userModel.findById(id);
+
+    if (!otherUser) return res.status(404).json({ message: "No user found" });
+
+    if (!currentUser.contacts.includes(otherUser._id))
+      return res.status(400).json({ message: "User is not in your contacts" });
+
+    // remove the user from contacts
+    const updated = await userModel.findByIdAndUpdate(
+      myId,
+      { $pull: { contacts: otherUser._id } },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "Removed successfully", updated });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   signUp,
   login,
@@ -150,4 +177,5 @@ module.exports = {
   searchUser,
   getUserToChat,
   addToContact,
+  removeFromContact,
 };

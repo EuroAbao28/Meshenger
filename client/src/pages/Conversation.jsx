@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { BsFillEmojiSmileFill, BsThreeDotsVertical } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
-import { LuArrowLeft } from "react-icons/lu";
+import { LuArrowLeft, LuUserX, LuBan } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetUserToChat from "../hooks/useGetUserToChat";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { userRoute } from "../utils/APIRoutes";
+import useGetUserData from "../hooks/useGetUserData";
 
 function Conversation() {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const { getUserDataFunction } = useGetUserData();
 
   const {
     getUserToChatFuntion,
@@ -28,6 +33,31 @@ function Conversation() {
     } catch (error) {
       toast.error(error);
       console.log(error);
+    }
+  };
+
+  // remove user from contact
+  const handleRemoveUser = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+
+      const response = await axios.delete(
+        `${userRoute}/removeFromContact/${id}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+      getUserDataFunction();
+      navigate("/");
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -55,8 +85,23 @@ function Conversation() {
               <h3 className="text-lg font-semibold">{`${userToChat.firstname} ${userToChat.lastname}`}</h3>
             </div>
 
-            <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
-              <BsThreeDotsVertical className="text-2xl" />
+            <div className="dropdown dropdown-bottom dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
+                <BsThreeDotsVertical className="text-2xl" />
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1]  p-2 shadow bg-white rounded text-nowrap">
+                <li
+                  onClick={handleRemoveUser}
+                  className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100">
+                  <LuUserX />
+                  <a>Remove user</a>
+                </li>
+              </ul>
             </div>
           </div>
 
