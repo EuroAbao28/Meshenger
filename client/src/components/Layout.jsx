@@ -3,42 +3,29 @@ import FriendsList from "./FriendsList";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import SideMenu from "./SideMenu";
 import classNames from "classnames";
-import axios from "axios";
-import { userRoute } from "../utils/APIRoutes";
-import { useUserContext } from "../context/UserContextProvider";
-import toast from "react-hot-toast";
+import useGetUserData from "../hooks/useGetUserData";
 
 function Layout() {
   const navigate = useNavigate();
-
   const { id } = useParams();
-  const { setUser } = useUserContext();
-  const [isLoading, setIsLoading] = useState(true);
 
-  const checkUser = async () => {
+  const { getUserDataFunction, isGetUserDataLoading } = useGetUserData();
+
+  const getUserData = async () => {
     try {
-      const userToken = localStorage.getItem("userToken");
-
-      const response = await axios.get(`${userRoute}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
-
-      setUser(response.data.user);
-
-      setIsLoading(false);
+      await getUserDataFunction();
     } catch (error) {
+      console.log(error);
       navigate("/login");
-      toast.error(error.response.data.message);
     }
   };
-
   useEffect(() => {
-    checkUser();
+    getUserData();
   }, []);
 
   return (
     <>
-      {isLoading ? (
+      {isGetUserDataLoading ? (
         <div className="flex items-center justify-center w-screen h-svh text-slate-700">
           <div className="flex items-center gap-3">
             <span className="loading loading-spinner loading-md"></span>

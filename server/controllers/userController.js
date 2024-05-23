@@ -83,10 +83,15 @@ const searchUser = async (req, res) => {
     const { searchInput } = req.query;
 
     const response = await userModel.find({
-      $or: [
-        { username: { $regex: searchInput, $options: "i" } },
-        { firstname: { $regex: searchInput, $options: "i" } },
-        { lastname: { $regex: searchInput, $options: "i" } },
+      $and: [
+        {
+          $or: [
+            { username: { $regex: searchInput, $options: "i" } },
+            { firstname: { $regex: searchInput, $options: "i" } },
+            { lastname: { $regex: searchInput, $options: "i" } },
+          ],
+        },
+        { _id: { $ne: req.user.id } }, // Exclude the current user
       ],
     });
 
@@ -114,4 +119,35 @@ const getUserToChat = async (req, res) => {
   }
 };
 
-module.exports = { signUp, login, getLoggedInUser, searchUser, getUserToChat };
+const addToContact = async (req, res) => {
+  try {
+    const myId = req.user._id;
+    const { id } = req.params;
+
+    const currentUser = await userModel.findById(myId);
+    const otherUser = await userModel.findById(id);
+
+    if (!otherUser) return res.status(404).json({ message: "No user found" });
+
+    if (currentUser.contacts.includes(otherUser._id))
+      return res.status(400).json({ message: "Already in contacts" });
+
+    // add the user to contact
+    currentUser.contacts.push(otherUser._id);
+    await currentUser.save();
+
+    return res.status(201).json({ message: "Added to contact" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  signUp,
+  login,
+  getLoggedInUser,
+  searchUser,
+  getUserToChat,
+  addToContact,
+};

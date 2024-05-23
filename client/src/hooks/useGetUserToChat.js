@@ -3,11 +3,9 @@ import { useState } from "react";
 import { userRoute } from "../utils/APIRoutes";
 
 const useGetUserToChat = () => {
-  const [isGetUserToChatLoading, setIsGetUserToChatLoading] = useState(false);
+  const [isGetUserToChatLoading, setIsGetUserToChatLoading] = useState(true);
 
   const getUserToChatFuntion = async (id) => {
-    setIsGetUserToChatLoading(true);
-
     try {
       const userToken = localStorage.getItem("userToken");
 
@@ -26,7 +24,11 @@ const useGetUserToChat = () => {
     }
   };
 
-  return { getUserToChatFuntion, isGetUserToChatLoading };
+  return {
+    getUserToChatFuntion,
+    isGetUserToChatLoading,
+    setIsGetUserToChatLoading,
+  };
 };
 
 export default useGetUserToChat;

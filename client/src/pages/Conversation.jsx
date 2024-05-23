@@ -11,11 +11,16 @@ function Conversation() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { getUserToChatFuntion, isGetUserToChatLoading } = useGetUserToChat();
+  const {
+    getUserToChatFuntion,
+    isGetUserToChatLoading,
+    setIsGetUserToChatLoading,
+  } = useGetUserToChat();
   const [userToChat, setUserToChat] = useState({});
 
   // get user to chat
   const handleGetUserToChat = async () => {
+    setIsGetUserToChatLoading(true);
     try {
       const response = await getUserToChatFuntion(id);
 
@@ -33,7 +38,7 @@ function Conversation() {
   return (
     <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
       {isGetUserToChatLoading ? (
-        <div className=" flex-1 flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center flex-1 gap-2 ">
           <span className="loading loading-spinner loading-sm"></span>
           <div className="text-lg">Loading</div>
         </div>

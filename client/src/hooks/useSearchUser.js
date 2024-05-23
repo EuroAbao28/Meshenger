@@ -9,8 +9,16 @@ const useSearchUser = () => {
     setIsSearchLoading(true);
 
     try {
+      const userToken = localStorage.getItem("userToken");
+
       const response = await axios.get(
-        `${userRoute}/search?searchInput=${encodeURIComponent(searchInput)}`
+        `${userRoute}/search?searchInput=${encodeURIComponent(searchInput)}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
       );
 
       setIsSearchLoading(false);

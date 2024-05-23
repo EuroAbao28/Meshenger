@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { LuMenu, LuSearch, LuBell, LuX } from "react-icons/lu";
+import { LuMenu, LuSearch, LuBell, LuX, LuUserPlus } from "react-icons/lu";
 import userImage from "../assets/user.png";
-import { DUMMY_USERS } from "../constants/dummyUser";
 import { useStatesContext } from "../context/StatesContextProvider";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import useSearchUser from "../hooks/useSearchUser";
 import toast from "react-hot-toast";
+import { useUserContext } from "../context/UserContextProvider";
+import axios from "axios";
+import { userRoute } from "../utils/APIRoutes";
+import useGetUserData from "../hooks/useGetUserData";
 
 function FriendsList() {
   const navigate = useNavigate();
   const { setIsSideMenuOpen } = useStatesContext();
+  const { user, setUser } = useUserContext();
 
   const { searchFunction, isSearchLoading } = useSearchUser();
+  const { getUserDataFunction } = useGetUserData();
+
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [showResult, setShowResult] = useState(false);
@@ -55,6 +61,45 @@ function FriendsList() {
     }
   };
 
+  // select a user
+  const handleSelectUserToChat = (id) => {
+    navigate(`/${id}`);
+
+    // reset the search
+    setSearchInput("");
+    setShowResult(false);
+    setSearchResult([]);
+  };
+
+  // add to contact
+  const handleAddToContact = async (user) => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+
+      const response = await axios.post(
+        `${userRoute}/addToContact/${user._id}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      // reset the search
+      setSearchInput("");
+      setSearchResult([]);
+      setShowResult(false);
+
+      getUserDataFunction();
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <div className="flex flex-col bg-white rounded-lg shadow-sm">
       {/* header */}
@@ -90,7 +135,7 @@ function FriendsList() {
         {searchInput && (
           <div
             onClick={handleResetSearchInput}
-            className="rounded-full p-1 bg-slate-50 hover:bg-slate-100 cursor-pointer">
+            className="p-1 rounded-full cursor-pointer bg-slate-50 hover:bg-slate-100">
             <LuX className="text-slate-500" />
           </div>
         )}
@@ -100,19 +145,18 @@ function FriendsList() {
       <div className="relative flex-1">
         {!showResult ? (
           <div className="absolute inset-0 p-2 overflow-y-auto">
-            {/* fix this, with real user data */}
-            {DUMMY_USERS.map((user) => (
+            {user.contacts.map((user) => (
               <div
-                onClick={() => navigate("/999")}
                 key={user.username}
+                onClick={() => handleSelectUserToChat(user._id)}
                 className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
                 <div className="relative">
                   <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
-                  <img src={user.image} alt="user image" className="w-12" />
+                  <img src={userImage} alt="user image" className="w-12" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold line-clamp-1">
-                    {user.username}
+                    {`${user.firstname} ${user.lastname}`}
                   </h3>
                   <p className="w-full text-sm font-light line-clamp-1">
                     Lastest message here Lorem ipsum dolor sit amet consectetur
@@ -125,20 +169,20 @@ function FriendsList() {
         ) : (
           <div className="absolute inset-0 p-2 overflow-y-auto">
             {isSearchLoading ? (
-              <div className="flex gap-2  items-center justify-center">
+              <div className="flex items-center justify-center gap-2">
                 <span className="loading loading-spinner loading-xs"></span>
                 <p>Loading</p>
               </div>
             ) : (
               <>
                 {searchResult.length === 0 ? (
-                  <p className=" text-center">No user found</p>
+                  <p className="text-center ">No user found</p>
                 ) : (
                   <>
                     <p className="px-2 text-slate-400">Search result</p>
                     {searchResult.map((user) => (
                       <div
-                        onClick={() => navigate(`/${user._id}`)}
+                        onClick={() => handleSelectUserToChat(user._id)}
                         key={user.username}
                         className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
                         <div className="relative">
@@ -153,6 +197,14 @@ function FriendsList() {
                           <h3 className="font-semibold line-clamp-1">
                             {user.username}
                           </h3>
+                        </div>
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToContact(user);
+                          }}
+                          className="p-2 text-xl rounded-full hover:bg-slate-200 ">
+                          <LuUserPlus />
                         </div>
                       </div>
                     ))}

@@ -13,7 +13,11 @@ const authMdlr = async (req, res, next) => {
 
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = await userModel.findById(decodedToken._id);
+      req.user = await userModel.findById(decodedToken._id).populate({
+        path: "contacts",
+        model: "User",
+        select: "-password -contacts",
+      });
 
       // check if the token sender is existing in the mongodb
       if (!req.user) return res.status(401).json({ message: "Not authorized" });
@@ -26,7 +30,7 @@ const authMdlr = async (req, res, next) => {
   }
 
   if (!token) {
-    return res.status(401).json({ meesage: "No token" });
+    return res.status(401).json({ message: "No token" });
   }
 };
 
