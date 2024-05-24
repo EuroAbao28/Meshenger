@@ -4,6 +4,7 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import SideMenu from "./SideMenu";
 import classNames from "classnames";
 import useGetUserData from "../hooks/useGetUserData";
+import toast from "react-hot-toast";
 
 function Layout() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Layout() {
       await getUserDataFunction();
     } catch (error) {
       console.log(error);
+      toast.error(error);
       navigate("/login");
     }
   };
