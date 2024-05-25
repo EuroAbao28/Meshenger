@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsFillEmojiSmileFill, BsThreeDotsVertical } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
 import { LuArrowLeft, LuUserX, LuBan } from "react-icons/lu";
@@ -7,12 +7,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import useGetUserToChat from "../hooks/useGetUserToChat";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { userRoute } from "../utils/APIRoutes";
+import { messageRoute, userRoute } from "../utils/APIRoutes";
 import useGetUserData from "../hooks/useGetUserData";
+import classNames from "classnames";
+import { useUserContext } from "../context/UserContextProvider";
+
+const userToken = localStorage.getItem("userToken");
 
 function Conversation() {
   const navigate = useNavigate();
+  const messagesEndScroller = useRef(null);
   const { id } = useParams();
+  const { user } = useUserContext();
+
+  const [userToChat, setUserToChat] = useState({});
+  const [messages, setMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState("");
 
   const { getUserDataFunction } = useGetUserData();
 
@@ -21,7 +31,6 @@ function Conversation() {
     isGetUserToChatLoading,
     setIsGetUserToChatLoading,
   } = useGetUserToChat();
-  const [userToChat, setUserToChat] = useState({});
 
   // get user to chat
   const handleGetUserToChat = async () => {
@@ -39,8 +48,6 @@ function Conversation() {
   // remove user from contact
   const handleRemoveUser = async () => {
     try {
-      const userToken = localStorage.getItem("userToken");
-
       const response = await axios.delete(
         `${userRoute}/removeFromContact/${id}`,
         {
@@ -61,10 +68,66 @@ function Conversation() {
     }
   };
 
+  // get messages
+  const handleGetMessages = async () => {
+    try {
+      const response = await axios.get(`${messageRoute}/${id}`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      setMessages(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // send message
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        `${messageRoute}/${id}`,
+        { content: messageInput },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      const newMessage = {
+        content: messageInput,
+        sender: user._id,
+        receiver: id,
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+      setMessageInput("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // messages refresh
+  useEffect(() => {}, []);
+
+  // initial mount of this component
   useEffect(() => {
     handleGetUserToChat();
+    handleGetMessages();
   }, [id]);
 
+  // auto scroller
+  useEffect(() => {
+    if (messagesEndScroller.current) {
+      messagesEndScroller.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
   return (
     <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
       {isGetUserToChatLoading ? (
@@ -106,23 +169,51 @@ function Conversation() {
           </div>
 
           {/* conversations */}
-          <div className="flex-1">Convo</div>
+          <div className="flex-1  ">
+            <div className="relative w-full h-full  overflow-y-auto">
+              <div className="absolute inset-0  ">
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={classNames("chat py-1 px-2", {
+                      "chat-start  ": id === message.sender,
+                      "chat-end text-white": id !== message.sender,
+                    })}>
+                    <div
+                      className={classNames("chat-bubble ", {
+                        "bg-slate-100 ": id === message.sender,
+                        "text-white bg-sky-500": id !== message.sender,
+                      })}>
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndScroller} />
+              </div>
+            </div>
+          </div>
 
           {/* user input */}
           <div className="border-t-4 border-slate-100">
-            <div className="flex items-center gap-4 p-4">
+            <form
+              onSubmit={handleSendMessage}
+              className="flex items-center gap-4 p-4">
               <div className="text-2xl text-slate-500">
                 <BsFillEmojiSmileFill />
               </div>
               <input
                 type="text"
                 placeholder="Write a message"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
                 className="flex-1 px-4 py-2 rounded-full outline outline-1 focus-within:outline-sky-500 outline-slate-300"
               />
-              <div className="flex items-center justify-center w-10 text-lg text-white rounded-full bg-sky-500 aspect-square">
+              <button
+                type="submit"
+                className="flex items-center justify-center w-10 text-lg text-white rounded-full bg-sky-500 aspect-square">
                 <BiSolidSend />
-              </div>
-            </div>
+              </button>
+            </form>
           </div>
         </>
       )}

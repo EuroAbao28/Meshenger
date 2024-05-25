@@ -15,6 +15,8 @@ const useGetUserData = () => {
         headers: { Authorization: `Bearer ${userToken}` },
       });
 
+      console.log(response.data.user);
+
       setUser(response.data.user);
 
       setISGetUserDataLoading(false);

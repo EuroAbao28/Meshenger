@@ -56,6 +56,10 @@ const login = async (req, res) => {
     const isUserExist = await userModel.findOne({ username });
 
     if (isUserExist && (await bcrypt.compare(password, isUserExist.password))) {
+      // chang the status to true
+      isUserExist.status = true;
+      isUserExist.save();
+
       return res.status(200).json({
         message: "Login successfully",
         token: generateToken(isUserExist),

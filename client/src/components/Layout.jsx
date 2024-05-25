@@ -5,6 +5,10 @@ import SideMenu from "./SideMenu";
 import classNames from "classnames";
 import useGetUserData from "../hooks/useGetUserData";
 import toast from "react-hot-toast";
+import io from "socket.io-client";
+import { host } from "../utils/APIRoutes";
+
+const socket = io(host);
 
 function Layout() {
   const navigate = useNavigate();
@@ -12,16 +16,30 @@ function Layout() {
 
   const { getUserDataFunction, isGetUserDataLoading } = useGetUserData();
 
-  const getUserData = async () => {
-    try {
-      await getUserDataFunction();
-    } catch (error) {
-      console.log(error);
-      toast.error(error);
-      navigate("/login");
-    }
-  };
   useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to socket.io server");
+
+      // high ako neto
+      socket.on("musta", "reply sa musta");
+    });
+
+    // Cleanup on component unmount
+    // return () => {
+    //   socket.disconnect();
+    // };
+  }, []);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        await getUserDataFunction();
+      } catch (error) {
+        console.log(error);
+        toast.error(error);
+        navigate("/login");
+      }
+    };
     getUserData();
   }, []);
 
