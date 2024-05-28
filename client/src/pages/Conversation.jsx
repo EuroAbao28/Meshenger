@@ -7,22 +7,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import useGetUserToChat from "../hooks/useGetUserToChat";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { messageRoute, userRoute } from "../utils/APIRoutes";
+import { messageRoute, roomRoute, userRoute } from "../utils/APIRoutes";
 import useGetUserData from "../hooks/useGetUserData";
 import classNames from "classnames";
-import { useUserContext } from "../context/UserContextProvider";
-
-const userToken = localStorage.getItem("userToken");
+import { socket } from "../components/Layout";
+import TimeAgo from "timeago-react";
 
 function Conversation() {
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
   const { id } = useParams();
-  const { user } = useUserContext();
 
   const [userToChat, setUserToChat] = useState({});
-  const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [isMessagesLoading, setIsMessagesLoading] = useState(true);
+  const [roomId, setRoomId] = useState("");
+  const [isDateShown, setIsdDateShown] = useState("");
 
   const { getUserDataFunction } = useGetUserData();
 
@@ -37,12 +38,87 @@ function Conversation() {
     setIsGetUserToChatLoading(true);
     try {
       const response = await getUserToChatFuntion(id);
-
       setUserToChat(response.data);
+
+      console.log(`Leave room: ${roomId}`);
+      socket.emit("leaveRoom", roomId);
+
+      setRoomId("");
+
+      // getRoom
+      try {
+        const userToken = localStorage.getItem("userToken");
+        const getRoom = await axios.post(
+          `${roomRoute}/${id}`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
+
+        console.log(`Join room: ${getRoom.data.roomId}`);
+
+        socket.emit("joinRoom", getRoom.data.roomId);
+        setRoomId(getRoom.data.roomId);
+      } catch (error) {
+        toast.error("Room id not found/created");
+        console.log(error);
+      }
+
+      // get message
+      try {
+        const userToken = localStorage.getItem("userToken");
+        const response = await axios.get(`${messageRoute}/${id}`, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        setMessages(response.data);
+        setIsMessagesLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       toast.error(error);
       console.log(error);
     }
+  };
+
+  // get room id
+  // const handleGetRoom = async () => {
+  //   try {
+  //     const userToken = localStorage.getItem("userToken");
+
+  //     const response = await axios.post(
+  //       `${roomRoute}/${id}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${userToken}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log(response.data);
+
+  //     setRoomId(response.data.roomId);
+
+  //     // join a room in socket.io
+  //     socket.emit("joinRoom", response.data.roomId);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // leave room
+  const handleLeaveRoom = () => {
+    socket.emit("leaveRoom", roomId);
+    navigate("/");
   };
 
   // remove user from contact
@@ -68,28 +144,12 @@ function Conversation() {
     }
   };
 
-  // get messages
-  const handleGetMessages = async () => {
-    try {
-      const response = await axios.get(`${messageRoute}/${id}`, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-
-      setMessages(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // send message
   const handleSendMessage = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
+      const userToken = localStorage.getItem("userToken");
+      const response = await axios.post(
         `${messageRoute}/${id}`,
         { content: messageInput },
         {
@@ -100,34 +160,54 @@ function Conversation() {
         }
       );
 
-      const newMessage = {
-        content: messageInput,
-        sender: user._id,
-        receiver: id,
+      // add the roomId
+      const messageData = {
+        ...response.data.response,
+        roomId,
       };
 
-      setMessages((prev) => [...prev, newMessage]);
+      // console.log(messageData);
+
+      // emit the sent message
+      socket.emit("sendMessage", messageData);
+
+      setMessages((prev) => [...prev, response.data.response]);
       setMessageInput("");
     } catch (error) {
       console.log(error);
     }
   };
 
-  // messages refresh
-  useEffect(() => {}, []);
+  // toggle date
+  const handleToggleDate = (id) => {
+    if (isDateShown === id) {
+      setIsdDateShown("");
+    } else {
+      setIsdDateShown(id);
+    }
+  };
 
-  // initial mount of this component
+  // refresh if the id params changes
   useEffect(() => {
+    // get messages
+
     handleGetUserToChat();
-    handleGetMessages();
   }, [id]);
+
+  // for receiving message from socket.io
+  useEffect(() => {
+    socket.on("receiveMessage", (data) => {
+      setMessages((prev) => [...prev, data]);
+    });
+  }, []);
 
   // auto scroller
   useEffect(() => {
     if (messagesEndScroller.current) {
       messagesEndScroller.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, id]);
+
   return (
     <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
       {isGetUserToChatLoading ? (
@@ -140,7 +220,7 @@ function Conversation() {
           {/* header */}
           <div className="flex items-center justify-between gap-2 p-4 border-b-4 border-slate-100">
             <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100 md:hidden">
-              <LuArrowLeft className="text-2xl" onClick={() => navigate("/")} />
+              <LuArrowLeft className="text-2xl" onClick={handleLeaveRoom} />
             </div>
 
             <div className="flex items-center gap-4 mr-auto">
@@ -169,26 +249,39 @@ function Conversation() {
           </div>
 
           {/* conversations */}
-          <div className="flex-1  ">
-            <div className="relative w-full h-full  overflow-y-auto">
+          <div className="flex-1 ">
+            <div className="relative w-full h-full overflow-y-auto">
               <div className="absolute inset-0  ">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={classNames("chat py-1 px-2", {
-                      "chat-start  ": id === message.sender,
-                      "chat-end text-white": id !== message.sender,
-                    })}>
+                {!isMessagesLoading &&
+                  messages.map((message, index) => (
                     <div
-                      className={classNames("chat-bubble ", {
-                        "bg-slate-100 ": id === message.sender,
-                        "text-white bg-sky-500": id !== message.sender,
+                      ref={messagesEndScroller}
+                      key={index}
+                      className={classNames("chat px-2", {
+                        "chat-start  ": id === message.sender,
+                        "chat-end ": id !== message.sender,
                       })}>
-                      {message.content}
+                      <div
+                        onClick={() => handleToggleDate(message._id)}
+                        className={classNames("chat-bubble", {
+                          "bg-slate-100 ": id === message.sender,
+                          "text-white bg-sky-500 place-self-end":
+                            id !== message.sender,
+                        })}>
+                        {message.content}
+                      </div>
+                      <div
+                        className={classNames(
+                          "chat-footer  mt-1 transition-all text-slate-400 overflow-hidden",
+                          {
+                            "h-0": isDateShown !== message._id,
+                            "h-5": isDateShown === message._id,
+                          }
+                        )}>
+                        <TimeAgo datetime={message.createdAt} />
+                      </div>
                     </div>
-                  </div>
-                ))}
-                <div ref={messagesEndScroller} />
+                  ))}
               </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import io from "socket.io-client";
 import { host } from "../utils/APIRoutes";
 
-const socket = io(host);
+export const socket = io(host);
 
 function Layout() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function Layout() {
       console.log("Connected to socket.io server");
 
       // high ako neto
-      socket.on("musta", "reply sa musta");
+      socket.emit("test", { content: "ako to" });
     });
 
     // Cleanup on component unmount
@@ -41,7 +41,7 @@ function Layout() {
       }
     };
     getUserData();
-  }, []);
+  }, [id]);
 
   return (
     <>

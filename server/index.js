@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 // routes
 app.use("/api/user", require("./routes/userRoute"));
 app.use("/api/message", require("./routes/messageRoute"));
+app.use("/api/room", require("./routes/roomRoute"));
 
 // create a server
 const server = http.createServer(app);
@@ -40,6 +41,24 @@ io.on("connection", (socket) => {
     console.log(`${username} logged in`);
     onlineUsers.push(username);
     io.emit("updatedStatus", onlineUsers);
+  });
+
+  // when someone join a room
+  socket.on("joinRoom", (data) => {
+    socket.join(data);
+    console.log("Someone joined room:", data);
+  });
+
+  // when someone leave a room
+  socket.on("leaveRoom", (data) => {
+    socket.leave(data);
+    console.log("Someone leave room:", data);
+  });
+
+  // when someone send
+  socket.on("sendMessage", (data) => {
+    // console.log(data);
+    socket.to(data.roomId).emit("receiveMessage", data);
   });
 
   // handle disconnect
