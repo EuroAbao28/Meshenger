@@ -41,7 +41,7 @@ function Layout() {
       }
     };
     getUserData();
-  }, [id]);
+  }, []);
 
   return (
     <>

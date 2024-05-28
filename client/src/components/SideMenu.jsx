@@ -48,7 +48,7 @@ function SideMenu() {
           />
           <div className="flex-1">
             <h3 className="font-semibold">{`${user.firstname} ${user.lastname}`}</h3>
-            <p className="-mt-1 text-sm text-sky-500">{user._id}</p>
+            <p className="-mt-1 text-sm text-sky-500">{user.username}</p>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BsFillEmojiSmileFill, BsThreeDotsVertical } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
-import { LuArrowLeft, LuUserX, LuBan } from "react-icons/lu";
+import { LuArrowLeft, LuUserX, LuUserPlus } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetUserToChat from "../hooks/useGetUserToChat";
@@ -12,10 +12,13 @@ import useGetUserData from "../hooks/useGetUserData";
 import classNames from "classnames";
 import { socket } from "../components/Layout";
 import TimeAgo from "timeago-react";
+import useGetMessages from "../hooks/useGetMessages";
+import { useUserContext } from "../context/UserContextProvider";
 
 function Conversation() {
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
+  const { user } = useUserContext();
   const { id } = useParams();
 
   const [userToChat, setUserToChat] = useState({});
@@ -32,6 +35,7 @@ function Conversation() {
     isGetUserToChatLoading,
     setIsGetUserToChatLoading,
   } = useGetUserToChat();
+  const { getMessagesFunction, isGetMessagesLoading } = useGetMessages();
 
   // get user to chat
   const handleGetUserToChat = async () => {
@@ -40,7 +44,6 @@ function Conversation() {
       const response = await getUserToChatFuntion(id);
       setUserToChat(response.data);
 
-      console.log(`Leave room: ${roomId}`);
       socket.emit("leaveRoom", roomId);
 
       setRoomId("");
@@ -59,27 +62,10 @@ function Conversation() {
           }
         );
 
-        console.log(`Join room: ${getRoom.data.roomId}`);
-
         socket.emit("joinRoom", getRoom.data.roomId);
         setRoomId(getRoom.data.roomId);
       } catch (error) {
         toast.error("Room id not found/created");
-        console.log(error);
-      }
-
-      // get message
-      try {
-        const userToken = localStorage.getItem("userToken");
-        const response = await axios.get(`${messageRoute}/${id}`, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-        setMessages(response.data);
-        setIsMessagesLoading(false);
-      } catch (error) {
         console.log(error);
       }
     } catch (error) {
@@ -88,42 +74,38 @@ function Conversation() {
     }
   };
 
-  // get room id
-  // const handleGetRoom = async () => {
-  //   try {
-  //     const userToken = localStorage.getItem("userToken");
-
-  //     const response = await axios.post(
-  //       `${roomRoute}/${id}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${userToken}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log(response.data);
-
-  //     setRoomId(response.data.roomId);
-
-  //     // join a room in socket.io
-  //     socket.emit("joinRoom", response.data.roomId);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   // leave room
   const handleLeaveRoom = () => {
     socket.emit("leaveRoom", roomId);
     navigate("/");
   };
 
+  // add user from contact
+  const handleAddUser = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      const response = await axios.post(
+        `${userRoute}/addToContact/${id}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      toast.success(response.data.message);
+      getUserDataFunction();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   // remove user from contact
   const handleRemoveUser = async () => {
     try {
+      const userToken = localStorage.getItem("userToken");
       const response = await axios.delete(
         `${userRoute}/removeFromContact/${id}`,
         {
@@ -136,8 +118,6 @@ function Conversation() {
 
       toast.success(response.data.message);
       getUserDataFunction();
-      navigate("/");
-      console.log(response.data);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -189,8 +169,18 @@ function Conversation() {
 
   // refresh if the id params changes
   useEffect(() => {
-    // get messages
+    const getMessage = async () => {
+      setMessages([]);
+      try {
+        const response = await getMessagesFunction(id);
+        setMessages(response.data);
+      } catch (error) {
+        toast.error(error);
+        console.log(error);
+      }
+    };
 
+    getMessage();
     handleGetUserToChat();
   }, [id]);
 
@@ -238,12 +228,21 @@ function Conversation() {
               <ul
                 tabIndex={0}
                 className="dropdown-content z-[1]  p-2 shadow bg-white rounded text-nowrap">
-                <li
-                  onClick={handleRemoveUser}
-                  className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100">
-                  <LuUserX />
-                  <a>Remove user</a>
-                </li>
+                {user.contacts.some((contact) => contact._id === id) ? (
+                  <li
+                    onClick={handleRemoveUser}
+                    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100">
+                    <LuUserX />
+                    <a>Remove user</a>
+                  </li>
+                ) : (
+                  <li
+                    onClick={handleAddUser}
+                    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100">
+                    <LuUserPlus />
+                    <a>Add user</a>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -252,7 +251,7 @@ function Conversation() {
           <div className="flex-1 ">
             <div className="relative w-full h-full overflow-y-auto">
               <div className="absolute inset-0  ">
-                {!isMessagesLoading &&
+                {messages &&
                   messages.map((message, index) => (
                     <div
                       ref={messagesEndScroller}

@@ -104,11 +104,10 @@ function FriendsList() {
     <div className="flex flex-col bg-white rounded-lg shadow-sm">
       {/* header */}
       <div className="flex items-center justify-between gap-2 p-4">
-        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
-          <LuMenu
-            className="text-2xl"
-            onClick={() => setIsSideMenuOpen(true)}
-          />
+        <div
+          onClick={() => setIsSideMenuOpen(true)}
+          className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
+          <LuMenu className="text-2xl" />
         </div>
         <div className="flex items-center gap-2">
           <img src={logo} alt="logo" className="w-6 " />
