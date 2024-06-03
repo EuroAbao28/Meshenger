@@ -14,6 +14,8 @@ import { socket } from "../components/Layout";
 import TimeAgo from "timeago-react";
 import useGetMessages from "../hooks/useGetMessages";
 import { useUserContext } from "../context/UserContextProvider";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 
 function Conversation() {
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ function Conversation() {
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [isEmojiShow, setIsEmojiShow] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(true);
   const [roomId, setRoomId] = useState("");
   const [isDateShown, setIsdDateShown] = useState("");
@@ -127,6 +130,7 @@ function Conversation() {
   // send message
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    setIsEmojiShow(false);
     try {
       const userToken = localStorage.getItem("userToken");
       const response = await axios.post(
@@ -198,6 +202,15 @@ function Conversation() {
     }
   }, [messages, id]);
 
+  // add emoji
+  const addEmoji = (e) => {
+    let sym = e.unified.split("-");
+    let codesArray = [];
+    sym.forEach((el) => codesArray.push("0x" + el));
+    let emoji = String.fromCodePoint(...codesArray);
+    setMessageInput(messageInput + emoji);
+  };
+
   return (
     <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
       {isGetUserToChatLoading ? (
@@ -250,7 +263,7 @@ function Conversation() {
           {/* conversations */}
           <div className="flex-1 ">
             <div className="relative w-full h-full overflow-y-auto">
-              <div className="absolute inset-0  ">
+              <div className="absolute inset-0 ">
                 {messages &&
                   messages.map((message, index) => (
                     <div
@@ -290,8 +303,15 @@ function Conversation() {
             <form
               onSubmit={handleSendMessage}
               className="flex items-center gap-4 p-4">
-              <div className="text-2xl text-slate-500">
-                <BsFillEmojiSmileFill />
+              <div className="relative p-2 text-2xl rounded-full hover:bg-slate-100 text-slate-500">
+                <div onClick={() => setIsEmojiShow(!isEmojiShow)}>
+                  <BsFillEmojiSmileFill />
+                </div>
+                {isEmojiShow && (
+                  <div className="absolute left-0 z-10 bottom-10">
+                    <Picker data={data} onEmojiSelect={addEmoji} />
+                  </div>
+                )}
               </div>
               <input
                 type="text"

@@ -13,6 +13,7 @@ import Welcome from "./pages/Welcome";
 import Conversation from "./pages/Conversation";
 import { Toaster } from "react-hot-toast";
 import { UseProvider } from "./context/UserContextProvider";
+import MyProfile from "./pages/MyProfile";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               </Route>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="profile" element={<MyProfile />} />
             </Routes>
           </Router>
         </StatesProvider>

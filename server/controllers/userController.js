@@ -73,6 +73,26 @@ const login = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const myId = req.user._id;
+    const { firstname, lastname, username } = req.body;
+
+    const user = await userModel.findById(myId);
+
+    user.firstname = firstname || user.firstname;
+    user.lastname = lastname || user.lastname;
+    user.username = username || user.username;
+
+    await user.save();
+
+    return res.status(201).json({ message: "Update successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const getLoggedInUser = async (req, res) => {
   try {
     return res.status(200).json({ message: "Valid user", user: req.user });
@@ -177,6 +197,7 @@ const removeFromContact = async (req, res) => {
 module.exports = {
   signUp,
   login,
+  updateUser,
   getLoggedInUser,
   searchUser,
   getUserToChat,

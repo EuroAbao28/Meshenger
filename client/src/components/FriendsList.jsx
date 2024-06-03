@@ -101,7 +101,7 @@ function FriendsList() {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-lg shadow-sm">
+    <div className="flex flex-col bg-white shadow-sm md:rounded-lg">
       {/* header */}
       <div className="flex items-center justify-between gap-2 p-4">
         <div

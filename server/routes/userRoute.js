@@ -6,6 +6,7 @@ const {
   getUserToChat,
   addToContact,
   removeFromContact,
+  updateUser,
 } = require("../controllers/userController");
 const protect = require("../middleware/auth");
 
@@ -18,5 +19,6 @@ router.get("/search", protect, searchUser);
 router.get("/getuserToChat/:id", protect, getUserToChat);
 router.post("/addToContact/:id", protect, addToContact);
 router.delete("/removeFromContact/:id", protect, removeFromContact);
+router.patch("/:id", protect, updateUser);
 
 module.exports = router;

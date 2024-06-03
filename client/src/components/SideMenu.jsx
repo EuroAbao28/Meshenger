@@ -13,6 +13,7 @@ function SideMenu() {
 
   const { isSideMenuOpen, setIsSideMenuOpen } = useStatesContext();
 
+  // logout
   const handleLogout = () => {
     setIsSideMenuOpen(false);
 
@@ -21,6 +22,12 @@ function SideMenu() {
 
     toast.success("Logged out succssfully");
     navigate("/login");
+  };
+
+  // navigate
+  const handleNavigate = (path) => {
+    setIsSideMenuOpen(false);
+    navigate(path);
   };
 
   return (
@@ -34,7 +41,7 @@ function SideMenu() {
 
       <div
         className={classnames(
-          "absolute inset-0 w-4/5 z-50 transition-all bg-white duration-500 flex flex-col ease-in-out sm:w-2/5 md:w-[20rem] p-4",
+          "absolute inset-0 w-4/5 z-50 transition-all bg-white duration-500 flex flex-col ease-in-out sm:w-2/5 md:w-[20rem] p-4 md:p-6",
           {
             "-left-full": !isSideMenuOpen,
             "left-0": isSideMenuOpen,
@@ -52,7 +59,9 @@ function SideMenu() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100">
+        <div
+          onClick={() => handleNavigate("/profile")}
+          className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100">
           <LuUser className="text-lg" />
           My Profile
         </div>
