@@ -113,8 +113,24 @@ function FriendsList() {
           <img src={logo} alt="logo" className="w-6 " />
           <h1 className="text-2xl font-bold ">Meshenger</h1>
         </div>
-        <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100 ">
-          <LuBell className="text-2xl" />
+
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="p-2 rounded-full cursor-pointer hover:bg-slate-100 ">
+            <LuBell className="text-2xl" />
+          </div>
+          <ul
+            tabIndex={0}
+            className="z-20 p-2 mt-2 bg-white outline outline-1 outline-slate-200 rounded shadow w-[16rem] sm:w-[20rem] md:w-[16rem] dropdown-content menu lg:w-[20rem]">
+            <li>
+              <a>Item 1</a>
+            </li>
+            <li>
+              <a>Item 2</a>
+            </li>
+          </ul>
         </div>
       </div>
 

@@ -81,145 +81,165 @@ function MyProfile() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col w-screen h-svh text-slate-700">
-          <div className=" flex items-center gap-2 md:gap-12 p-4 mx-auto w-full max-w-[50rem] md:top-16     md:pt-12">
+        <div className="flex justify-center w-screen h-svh text-slate-700">
+          <div className="   w-[58rem] flex flex-col">
+            {/* header */}
+            <div className="flex items-center gap-2 p-4 md:gap-4 md:pt-12">
+              <div
+                onClick={() => navigate("/")}
+                className="p-2 text-lg rounded-full cursor-pointer md:text-4xl sm:text-2xl hover:bg-slate-100">
+                <LuArrowLeft />
+              </div>
+              <h1 className="text-lg font-semibold sm:text-2xl md:text-5xl">
+                My Profile
+              </h1>
+            </div>
+
+            {/* edit warnign */}
             <div
-              onClick={() => navigate("/")}
-              className="p-2 text-2xl rounded-full cursor-pointer hover:bg-slate-100 md:text-4xl">
-              <LuArrowLeft />
+              className={classNames(
+                "flex items-center gap-2 px-4 py-2 text-orange-500 transition-all bg-orange-100",
+                {
+                  "opacity-0 h-0": !isEditShow,
+                  "opacity-100 h-12": isEditShow,
+                }
+              )}>
+              <PiWarningCircleBold />
+              Edit Mode
             </div>
-            <h1 className="text-xl md:text-5xl md:font-semibold">My Profile</h1>
-          </div>
-          <div
-            className={classNames(
-              "px-4 py-2 bg-orange-100 transition-all text-orange-500 w-full md:w-[50rem] mx-auto flex items-center gap-4",
-              {
-                "opacity-100 h-10": isEditShow,
-                "opacity-0 h-0": !isEditShow,
-              }
-            )}>
-            <PiWarningCircleBold className="text-lg" />
-            Edit mode
-          </div>
-          {isEditShow ? (
-            // edit
-            <div className="md:w-[50rem] w-full p-4 md:p-0 mx-auto  md:flex gap-6  flex-1    md:pt-20 ">
-              <img
-                className="mx-auto mb-6 rounded-full h-fit w-44 md:w-52"
-                src={userImage}
-                alt="user image"
-              />
-              <form
-                onSubmit={handleSaveEdit}
-                className="flex flex-col items-end flex-1 gap-14">
-                <div className="grid w-full grid-cols-1 gap-6 h-fit sm:grid-cols-2">
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Firstname</p>
-                    <input
-                      value={editUser.firstname}
-                      onChange={(e) =>
-                        setEditUser({ ...editUser, firstname: e.target.value })
-                      }
-                      className="p-2 px-4 rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2"
-                    />
+
+            {/* body */}
+            {isEditShow ? (
+              <div className="flex-1 gap-6 p-4 pt-6 md:flex md:pt-12 ">
+                <img
+                  src={userImage}
+                  alt="user image"
+                  className="object-contain w-48 mx-auto rounded-full md:m-0 aspect-square md:w-60 place-self-start"
+                />
+                <form
+                  onSubmit={handleSaveEdit}
+                  className="flex-1 mt-6 bg-white md:mt-0">
+                  <div className="grid w-full grid-cols-1 gap-6 h-fit sm:grid-cols-2">
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Firstname</p>
+                      <input
+                        required
+                        value={editUser.firstname}
+                        onChange={(e) =>
+                          setEditUser({
+                            ...editUser,
+                            firstname: e.target.value,
+                          })
+                        }
+                        className="p-2 px-4 rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Lastname</p>
+                      <input
+                        required
+                        value={editUser.lastname}
+                        onChange={(e) =>
+                          setEditUser({ ...editUser, lastname: e.target.value })
+                        }
+                        className="p-2 px-4 rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Username</p>
+                      <input
+                        required
+                        value={editUser.username}
+                        onChange={(e) =>
+                          setEditUser({ ...editUser, username: e.target.value })
+                        }
+                        className="p-2 px-4 rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Password</p>
+                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
+                        ••••••••••••
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Lastname</p>
-                    <input
-                      value={editUser.lastname}
-                      onChange={(e) =>
-                        setEditUser({ ...editUser, lastname: e.target.value })
-                      }
-                      className="p-2 px-4 rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2"
-                    />
+                  <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto">
+                    <button
+                      onClick={() => setIsEditShow(false)}
+                      type="button"
+                      className="flex-1 px-4 py-2 rounded outline outline-2 text-nowrap text-sky-500 outline-sky-500 focus:outline-sky-500 focus:outline-2">
+                      Cancel
+                    </button>
+                    <button
+                      disabled={isSaveLoading}
+                      type="submit"
+                      className="flex items-center justify-center flex-1 gap-2 px-4 py-2 text-white bg-green-500 rounded text-nowrap">
+                      {isSaveLoading ? (
+                        <>
+                          <span className="loading loading-spinner loading-sm"></span>
+                          Saving
+                        </>
+                      ) : (
+                        "Save"
+                      )}
+                    </button>
                   </div>
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Username</p>
-                    <input
-                      value={editUser.username}
-                      onChange={(e) =>
-                        setEditUser({ ...editUser, username: e.target.value })
-                      }
-                      className="p-2 px-4 rounded outline outline-1 outline-slate-300 focus:outline-sky-500 focus:outline-2"
-                    />
+                </form>
+              </div>
+            ) : (
+              <div className="flex-1 gap-6 p-4 pt-6 md:flex md:pt-12 ">
+                <img
+                  src={userImage}
+                  alt="user image"
+                  className="object-contain w-48 mx-auto rounded-full md:m-0 aspect-square md:w-60 place-self-start"
+                />
+                <div className="flex-1 mt-6 bg-white md:mt-0">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Firstname</p>
+                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
+                        {user.firstname}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Lastname</p>
+
+                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
+                        {user.lastname}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Username</p>
+
+                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
+                        {user.username}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-1 ">
+                      <p className="text-sm text-slate-400">Password</p>
+
+                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
+                        ••••••••••••
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Password</p>
-                    <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                      ••••••••••••
-                    </p>
+                  <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto">
+                    <button className="flex-1 py-2 text-white bg-red-500 rounded">
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setIsEditShow(true)}
+                      className="flex-1 py-2 bg-white rounded text-sky-500 outline outline-2 outline-sky-500">
+                      Update
+                    </button>
                   </div>
-                </div>
-                <div className="flex w-1/2 gap-4 ">
-                  <button
-                    onClick={() => setIsEditShow(false)}
-                    type="button"
-                    className="flex-1 px-4 py-2 rounded outline outline-2 text-nowrap outline-sky-500 text-slate-400 focus:outline-sky-500 focus:outline-2">
-                    Cancel
-                  </button>
-                  <button
-                    disabled={isSaveLoading}
-                    type="submit"
-                    className="flex items-center justify-center flex-1 gap-2 px-4 py-2 text-white bg-green-500 rounded text-nowrap">
-                    {isSaveLoading ? (
-                      <>
-                        <span className="loading loading-spinner loading-sm"></span>
-                        Saving
-                      </>
-                    ) : (
-                      "Save"
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="md:w-[50rem] w-full p-4 md:p-0 mx-auto  md:flex gap-6  flex-1    md:pt-20 ">
-              <img
-                className="mx-auto mb-6 rounded-full w-44 md:w-52 md:place-self-start "
-                src={userImage}
-                alt="user image"
-              />
-              <div className="flex flex-col items-end flex-1 gap-14">
-                <div className="grid w-full grid-cols-1 gap-6 h-fit sm:grid-cols-2">
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Firstname</p>
-                    <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                      {user.firstname}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Lastname</p>
-                    <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                      {user.lastname}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Username</p>
-                    <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                      {user.username}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1 ">
-                    <p className="text-sm text-slate-400">Password</p>
-                    <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                      ••••••••••••
-                    </p>
-                  </div>
-                </div>
-                <div className="flex w-1/2 gap-4 ">
-                  <button className="flex-1 px-4 py-2 text-white bg-red-400 rounded text-nowrap">
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => setIsEditShow(true)}
-                    className="flex-1 px-4 py-2 rounded outline outline-2 text-nowrap outline-sky-500 text-slate-400">
-                    Edit
-                  </button>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </>

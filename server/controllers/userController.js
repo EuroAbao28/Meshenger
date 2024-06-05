@@ -80,9 +80,9 @@ const updateUser = async (req, res) => {
 
     const user = await userModel.findById(myId);
 
-    user.firstname = firstname || user.firstname;
-    user.lastname = lastname || user.lastname;
-    user.username = username || user.username;
+    user.firstname = firstname.trim() || user.firstname;
+    user.lastname = lastname.trim() || user.lastname;
+    user.username = username.trim() || user.username;
 
     await user.save();
 
@@ -110,9 +110,9 @@ const searchUser = async (req, res) => {
       $and: [
         {
           $or: [
-            { username: { $regex: searchInput, $options: "i" } },
-            { firstname: { $regex: searchInput, $options: "i" } },
-            { lastname: { $regex: searchInput, $options: "i" } },
+            { username: { $regex: searchInput.trim(), $options: "i" } },
+            { firstname: { $regex: searchInput.trim(), $options: "i" } },
+            { lastname: { $regex: searchInput.trim(), $options: "i" } },
           ],
         },
         { _id: { $ne: req.user.id } }, // Exclude the current user

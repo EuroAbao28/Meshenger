@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -41,6 +41,10 @@ function Login() {
       return;
     }
   };
+
+  useEffect(() => {
+    localStorage.removeItem("userToken");
+  }, []);
 
   return (
     <div className="relative flex items-center justify-center w-screen h-svh text-slate-700">
