@@ -194,6 +194,19 @@ const removeFromContact = async (req, res) => {
   }
 };
 
+const getContacts = async (req, res) => {
+  try {
+    const myId = req.user._id;
+
+    const response = await userModel.findById(myId).select("contacts");
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   signUp,
   login,
@@ -203,4 +216,5 @@ module.exports = {
   getUserToChat,
   addToContact,
   removeFromContact,
+  getContacts,
 };

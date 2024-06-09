@@ -16,22 +16,24 @@ import useGetMessages from "../hooks/useGetMessages";
 import { useUserContext } from "../context/UserContextProvider";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import useGetLatestMessage from "../hooks/useGetLatestMessage";
 
 function Conversation() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
-  const { user } = useUserContext();
-  const { id } = useParams();
+  const { user, toggleGetLatestMessage, setToggleGetLatesMessage } =
+    useUserContext();
 
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isEmojiShow, setIsEmojiShow] = useState(false);
-  const [isMessagesLoading, setIsMessagesLoading] = useState(true);
   const [roomId, setRoomId] = useState("");
   const [isDateShown, setIsdDateShown] = useState("");
 
   const { getUserDataFunction } = useGetUserData();
+  const { getLatestMessageFunction, latestMessage } = useGetLatestMessage();
 
   const {
     getUserToChatFuntion,
@@ -45,8 +47,9 @@ function Conversation() {
     setIsGetUserToChatLoading(true);
     try {
       const response = await getUserToChatFuntion(id);
-      setUserToChat(response.data);
 
+      setUserToChat(response.data);
+      // console.log(response.data);
       socket.emit("leaveRoom", roomId);
 
       setRoomId("");
@@ -154,9 +157,15 @@ function Conversation() {
 
       // emit the sent message
       socket.emit("sendMessage", messageData);
+      socket.emit("sendNotif", messageData);
 
       setMessages((prev) => [...prev, response.data.response]);
       setMessageInput("");
+      setIsEmojiShow(false);
+
+      setToggleGetLatesMessage((prev) => prev + 1);
+
+      // set latest chat
     } catch (error) {
       console.log(error);
     }
@@ -168,6 +177,27 @@ function Conversation() {
       setIsdDateShown("");
     } else {
       setIsdDateShown(id);
+    }
+  };
+
+  // change isRead to true
+  const updateIsRead = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+
+      const response = await axios.patch(
+        `${messageRoute}/readLatest/IDDITO`,
+        {},
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      console.log("tanga", response);
+    } catch (error) {
+      console.log(error.response.data.message);
     }
   };
 
@@ -192,6 +222,11 @@ function Conversation() {
   useEffect(() => {
     socket.on("receiveMessage", (data) => {
       setMessages((prev) => [...prev, data]);
+
+      // set isRead to true
+      updateIsRead();
+
+      setToggleGetLatesMessage((prev) => prev + 1);
     });
   }, []);
 
@@ -210,6 +245,11 @@ function Conversation() {
     let emoji = String.fromCodePoint(...codesArray);
     setMessageInput(messageInput + emoji);
   };
+
+  useEffect(() => {
+    // set isRead to true
+    updateIsRead();
+  }, []);
 
   return (
     <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
@@ -262,7 +302,7 @@ function Conversation() {
 
           {/* conversations */}
           <div className="flex-1 ">
-            <div className="relative w-full h-full overflow-y-auto">
+            <div className="relative w-full h-full overflow-x-hidden overflow-y-auto">
               <div className="absolute inset-0 ">
                 {messages &&
                   messages.map((message, index) => (

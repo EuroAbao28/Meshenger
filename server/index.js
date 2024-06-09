@@ -61,6 +61,11 @@ io.on("connection", (socket) => {
     socket.to(data.roomId).emit("receiveMessage", data);
   });
 
+  // send message notif
+  socket.on("sendNotif", (data) => {
+    io.emit("receiveNotif", data);
+  });
+
   // handle disconnect
   socket.on("disconnect", () => {
     console.log("User disconnect");

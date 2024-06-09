@@ -7,6 +7,7 @@ const {
   addToContact,
   removeFromContact,
   updateUser,
+  getContacts,
 } = require("../controllers/userController");
 const protect = require("../middleware/auth");
 
@@ -20,5 +21,6 @@ router.get("/getuserToChat/:id", protect, getUserToChat);
 router.post("/addToContact/:id", protect, addToContact);
 router.delete("/removeFromContact/:id", protect, removeFromContact);
 router.patch("/:id", protect, updateUser);
+router.get("/getContacts", protect, getContacts);
 
 module.exports = router;

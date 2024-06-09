@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LuMenu, LuSearch, LuBell, LuX, LuUserPlus } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { useStatesContext } from "../context/StatesContextProvider";
@@ -8,16 +8,21 @@ import useSearchUser from "../hooks/useSearchUser";
 import toast from "react-hot-toast";
 import { useUserContext } from "../context/UserContextProvider";
 import axios from "axios";
-import { userRoute } from "../utils/APIRoutes";
+import { messageRoute, userRoute } from "../utils/APIRoutes";
 import useGetUserData from "../hooks/useGetUserData";
+import useGetLatestMessage from "../hooks/useGetLatestMessage";
+import { socket } from "./Layout";
+import classNames from "classnames";
 
 function FriendsList() {
   const navigate = useNavigate();
   const { setIsSideMenuOpen } = useStatesContext();
-  const { user, setUser } = useUserContext();
+  const { user, setUser, toggleGetLatestMessage, setToggleGetLatesMessage } =
+    useUserContext();
 
   const { searchFunction, isSearchLoading } = useSearchUser();
   const { getUserDataFunction } = useGetUserData();
+  const { getLatestMessageFunction, latestMessage } = useGetLatestMessage();
 
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -100,6 +105,19 @@ function FriendsList() {
     }
   };
 
+  // get latst message
+  useEffect(() => {
+    getLatestMessageFunction();
+  }, [, toggleGetLatestMessage]);
+
+  useEffect(() => {
+    socket.on("receiveNotif", (data) => {
+      if (data.receiver === user._id) {
+        setToggleGetLatesMessage((prev) => prev + 1);
+      }
+    });
+  }, []);
+
   return (
     <div className="flex flex-col bg-white shadow-sm md:rounded-lg">
       {/* header */}
@@ -160,22 +178,32 @@ function FriendsList() {
       <div className="relative flex-1">
         {!showResult ? (
           <div className="absolute inset-0 p-2 overflow-y-auto">
-            {user.contacts.map((user) => (
+            {user.contacts.map((contact) => (
               <div
-                key={user.username}
-                onClick={() => handleSelectUserToChat(user._id)}
+                key={contact.username}
+                onClick={() => handleSelectUserToChat(contact._id)}
                 className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
-                <div className="relative">
+                <div className="relative w-12">
                   <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
-                  <img src={userImage} alt="user image" className="w-12" />
+                  <img
+                    src={userImage}
+                    alt="user image"
+                    className="w-full rounded-full aspect-square"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold line-clamp-1">
-                    {`${user.firstname} ${user.lastname}`}
+                    {`${contact.firstname} ${contact.lastname}`}
                   </h3>
-                  <p className="w-full text-sm font-light line-clamp-1">
-                    Lastest message here Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Ut, accusantium.
+                  <p
+                    className={classNames("w-full text-sm  line-clamp-1", {
+                      "font-semibold ":
+                        user._id !== latestMessage[contact._id]?.sender,
+                      "  font-normal ":
+                        user._id === latestMessage[contact._id]?.sender,
+                    })}>
+                    {user._id === latestMessage[contact._id]?.sender && "You: "}
+                    {latestMessage[contact._id]?.content || "No messages yet"}
                   </p>
                 </div>
               </div>
