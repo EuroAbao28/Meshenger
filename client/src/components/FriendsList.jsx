@@ -3,7 +3,7 @@ import { LuMenu, LuSearch, LuBell, LuX, LuUserPlus } from "react-icons/lu";
 import userImage from "../assets/user.png";
 import { useStatesContext } from "../context/StatesContextProvider";
 import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useSearchUser from "../hooks/useSearchUser";
 import toast from "react-hot-toast";
 import { useUserContext } from "../context/UserContextProvider";
@@ -17,7 +17,7 @@ import classNames from "classnames";
 function FriendsList() {
   const navigate = useNavigate();
   const { setIsSideMenuOpen } = useStatesContext();
-  const { user, setUser, toggleGetLatestMessage, setToggleGetLatesMessage } =
+  const { user, toggleGetLatestMessage, setToggleGetLatesMessage } =
     useUserContext();
 
   const { searchFunction, isSearchLoading } = useSearchUser();
@@ -195,13 +195,7 @@ function FriendsList() {
                   <h3 className="font-semibold line-clamp-1">
                     {`${contact.firstname} ${contact.lastname}`}
                   </h3>
-                  <p
-                    className={classNames("w-full text-sm  line-clamp-1", {
-                      "font-semibold ":
-                        user._id !== latestMessage[contact._id]?.sender,
-                      "  font-normal ":
-                        user._id === latestMessage[contact._id]?.sender,
-                    })}>
+                  <p className="w-full text-sm line-clamp-1">
                     {user._id === latestMessage[contact._id]?.sender && "You: "}
                     {latestMessage[contact._id]?.content || "No messages yet"}
                   </p>

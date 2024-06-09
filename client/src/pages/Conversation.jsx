@@ -22,8 +22,7 @@ function Conversation() {
   const { id } = useParams();
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
-  const { user, toggleGetLatestMessage, setToggleGetLatesMessage } =
-    useUserContext();
+  const { user, setToggleGetLatesMessage } = useUserContext();
 
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
@@ -33,8 +32,6 @@ function Conversation() {
   const [isDateShown, setIsdDateShown] = useState("");
 
   const { getUserDataFunction } = useGetUserData();
-  const { getLatestMessageFunction, latestMessage } = useGetLatestMessage();
-
   const {
     getUserToChatFuntion,
     isGetUserToChatLoading,
@@ -180,27 +177,6 @@ function Conversation() {
     }
   };
 
-  // change isRead to true
-  const updateIsRead = async () => {
-    try {
-      const userToken = localStorage.getItem("userToken");
-
-      const response = await axios.patch(
-        `${messageRoute}/readLatest/IDDITO`,
-        {},
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      console.log("tanga", response);
-    } catch (error) {
-      console.log(error.response.data.message);
-    }
-  };
-
   // refresh if the id params changes
   useEffect(() => {
     const getMessage = async () => {
@@ -223,9 +199,6 @@ function Conversation() {
     socket.on("receiveMessage", (data) => {
       setMessages((prev) => [...prev, data]);
 
-      // set isRead to true
-      updateIsRead();
-
       setToggleGetLatesMessage((prev) => prev + 1);
     });
   }, []);
@@ -245,11 +218,6 @@ function Conversation() {
     let emoji = String.fromCodePoint(...codesArray);
     setMessageInput(messageInput + emoji);
   };
-
-  useEffect(() => {
-    // set isRead to true
-    updateIsRead();
-  }, []);
 
   return (
     <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
