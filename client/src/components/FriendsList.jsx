@@ -13,6 +13,30 @@ import useGetUserData from "../hooks/useGetUserData";
 import useGetLatestMessage from "../hooks/useGetLatestMessage";
 import { socket } from "./Layout";
 import myRingTone from "../assets/myRingTone.mp3";
+import TimeAgo from "timeago-react";
+import * as timeago from "timeago.js";
+
+// Define a custom locale with short formats
+const customLocale = (number, index, totalSec) =>
+  [
+    ["just now", "right now"],
+    ["%ss", "in %ss"],
+    ["1m", "in 1m"],
+    ["%sm", "in %sm"],
+    ["1h", "in 1h"],
+    ["%sh", "in %sh"],
+    ["1d", "in 1d"],
+    ["%sd", "in %sd"],
+    ["1w", "in 1w"],
+    ["%sw", "in %sw"],
+    ["1mo", "in 1mo"],
+    ["%smo", "in %smo"],
+    ["1y", "in 1y"],
+    ["%sy", "in %sy"],
+  ][index];
+
+// Register the custom locale
+timeago.register("short", customLocale);
 
 function FriendsList() {
   const navigate = useNavigate();
@@ -204,10 +228,21 @@ function FriendsList() {
                   <h3 className="font-semibold line-clamp-1">
                     {`${contact.firstname} ${contact.lastname}`}
                   </h3>
-                  <p className="w-full text-sm line-clamp-1">
-                    {user._id === latestMessage[contact._id]?.sender && "You: "}
-                    {latestMessage[contact._id]?.content || "No messages yet"}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm line-clamp-1">
+                      {user._id === latestMessage[contact._id]?.sender &&
+                        "You: "}
+                      {latestMessage[contact._id]?.content || "No messages yet"}
+                    </p>
+                    {latestMessage[contact._id]?.content && (
+                      <div className="text-xs text-nowrap text-slate-500">
+                        <TimeAgo
+                          datetime={latestMessage[contact._id]?.createdAt}
+                          locale="short"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
