@@ -26,7 +26,6 @@ function Conversation() {
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isEmojiShow, setIsEmojiShow] = useState(false);
   const [roomId, setRoomId] = useState("");
   const [isDateShown, setIsdDateShown] = useState("");
 
@@ -129,7 +128,7 @@ function Conversation() {
   // send message
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    setIsEmojiShow(false);
+
     try {
       const userToken = localStorage.getItem("userToken");
       const response = await axios.post(
@@ -157,7 +156,6 @@ function Conversation() {
 
       setMessages((prev) => [...prev, response.data.response]);
       setMessageInput("");
-      setIsEmojiShow(false);
 
       setToggleGetLatesMessage((prev) => prev + 1);
 
@@ -319,15 +317,18 @@ function Conversation() {
             <form
               onSubmit={handleSendMessage}
               className="flex items-center gap-4 p-4">
-              <div className="relative p-2 text-2xl rounded-full hover:bg-slate-100 text-slate-500">
-                <div onClick={() => setIsEmojiShow(!isEmojiShow)}>
+              <div className="dropdown dropdown-top">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="p-2 text-2xl rounded-full cursor-pointer text-slate-500 hover:bg-slate-100">
                   <BsFillEmojiSmileFill />
                 </div>
-                {isEmojiShow && (
-                  <div className="absolute left-0 z-10 bottom-10">
-                    <Picker data={data} onEmojiSelect={addEmoji} />
-                  </div>
-                )}
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content z-[1]  p-2 shadow bg-white rounded text-nowrap">
+                  <Picker data={data} onEmojiSelect={addEmoji} />
+                </ul>
               </div>
               <input
                 type="text"
