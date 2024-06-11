@@ -12,13 +12,18 @@ import { messageRoute, userRoute } from "../utils/APIRoutes";
 import useGetUserData from "../hooks/useGetUserData";
 import useGetLatestMessage from "../hooks/useGetLatestMessage";
 import { socket } from "./Layout";
-import classNames from "classnames";
+import myRingTone from "../assets/myRingTone.mp3";
 
 function FriendsList() {
   const navigate = useNavigate();
+  const [audio] = useState(new Audio(myRingTone));
   const { setIsSideMenuOpen } = useStatesContext();
-  const { user, toggleGetLatestMessage, setToggleGetLatesMessage } =
-    useUserContext();
+  const {
+    user,
+    toggleGetLatestMessage,
+    setToggleGetLatesMessage,
+    activeUsers,
+  } = useUserContext();
 
   const { searchFunction, isSearchLoading } = useSearchUser();
   const { getUserDataFunction } = useGetUserData();
@@ -114,6 +119,8 @@ function FriendsList() {
     socket.on("receiveNotif", (data) => {
       if (data.receiver === user._id) {
         setToggleGetLatesMessage((prev) => prev + 1);
+
+        audio.play().catch((err) => console.error("Error playing audio:", err));
       }
     });
   }, []);
@@ -184,7 +191,9 @@ function FriendsList() {
                 onClick={() => handleSelectUserToChat(contact._id)}
                 className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
                 <div className="relative w-12">
-                  <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                  {activeUsers.includes(contact.username) && (
+                    <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                  )}
                   <img
                     src={userImage}
                     alt="user image"
@@ -222,12 +231,14 @@ function FriendsList() {
                         onClick={() => handleSelectUserToChat(user._id)}
                         key={user.username}
                         className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
-                        <div className="relative">
-                          <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                        <div className="relative w-12">
+                          {activeUsers.includes(user.username) && (
+                            <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                          )}
                           <img
                             src={userImage}
                             alt="user image"
-                            className="w-12"
+                            className="w-full rounded-full aspect-square"
                           />
                         </div>
                         <div className="flex-1">

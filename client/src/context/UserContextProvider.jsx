@@ -8,6 +8,7 @@ export const useUserContext = () => useContext(UserContext);
 // Provider component
 export const UseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [activeUsers, setActiveUsers] = useState([]);
   const [toggleGetLatestMessage, setToggleGetLatesMessage] = useState(1);
 
   return (
@@ -17,6 +18,8 @@ export const UseProvider = ({ children }) => {
         setUser,
         toggleGetLatestMessage,
         setToggleGetLatesMessage,
+        activeUsers,
+        setActiveUsers,
       }}>
       {children}
     </UserContext.Provider>

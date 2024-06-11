@@ -19,6 +19,7 @@ const useGetUserData = () => {
       setUser(response.data.user);
 
       setISGetUserDataLoading(false);
+      return response.data;
     } catch (error) {
       setISGetUserDataLoading(false);
       throw error.response.data.message;

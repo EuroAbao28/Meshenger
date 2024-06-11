@@ -16,13 +16,12 @@ import useGetMessages from "../hooks/useGetMessages";
 import { useUserContext } from "../context/UserContextProvider";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import useGetLatestMessage from "../hooks/useGetLatestMessage";
 
 function Conversation() {
   const { id } = useParams();
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
-  const { user, setToggleGetLatesMessage } = useUserContext();
+  const { user, setToggleGetLatesMessage, activeUsers } = useUserContext();
 
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
@@ -229,13 +228,22 @@ function Conversation() {
       ) : (
         <>
           {/* header */}
-          <div className="flex items-center justify-between gap-2 p-4 border-b-4 border-slate-100">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b-4 border-slate-100">
             <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100 md:hidden">
               <LuArrowLeft className="text-2xl" onClick={handleLeaveRoom} />
             </div>
 
             <div className="flex items-center gap-4 mr-auto">
-              <img src={userImage} alt="user" className="w-10" />
+              <div className="relative w-12">
+                {activeUsers.includes(userToChat.username) && (
+                  <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                )}
+                <img
+                  src={userImage}
+                  alt="user image"
+                  className="w-full rounded-full aspect-square"
+                />
+              </div>
               <h3 className="text-lg font-semibold">{`${userToChat.firstname} ${userToChat.lastname}`}</h3>
             </div>
 

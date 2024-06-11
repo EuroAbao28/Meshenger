@@ -39,8 +39,14 @@ io.on("connection", (socket) => {
   // handle login event
   socket.on("login", (username) => {
     console.log(`${username} logged in`);
-    onlineUsers.push(username);
-    io.emit("updatedStatus", onlineUsers);
+
+    if (!Object.values(onlineUsers).includes(username)) {
+      onlineUsers[socket.id] = username;
+      io.emit("updatedStatus", Object.values(onlineUsers));
+      console.log(onlineUsers);
+    } else {
+      console.log(`${username} is already logged in`);
+    }
   });
 
   // when someone join a room
@@ -69,6 +75,9 @@ io.on("connection", (socket) => {
   // handle disconnect
   socket.on("disconnect", () => {
     console.log("User disconnect");
+    delete onlineUsers[socket.id];
+    io.emit("updatedStatus", Object.values(onlineUsers));
+    console.log(onlineUsers);
   });
 });
 

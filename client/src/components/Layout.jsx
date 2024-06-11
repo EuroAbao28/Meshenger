@@ -5,42 +5,50 @@ import SideMenu from "./SideMenu";
 import classNames from "classnames";
 import useGetUserData from "../hooks/useGetUserData";
 import toast from "react-hot-toast";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 import { host } from "../utils/APIRoutes";
+import { useUserContext } from "../context/UserContextProvider";
 
-export const socket = io(host);
+// para hindi auto connect
+export const socket = io(host, { autoConnect: false });
 
 function Layout() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user, setActiveUsers } = useUserContext();
 
   const { getUserDataFunction, isGetUserDataLoading } = useGetUserData();
 
+  const getUserData = async () => {
+    try {
+      const response = await getUserDataFunction();
+
+      socket.emit("login", response.user.username);
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
+    socket.connect();
+
     socket.on("connect", () => {
       console.log("Connected to socket.io server");
+    });
 
-      // high ako neto
-      socket.emit("test", { content: "ako to" });
+    getUserData();
+
+    socket.on("updatedStatus", (data) => {
+      // console.log("UPDATED STATUS", data);
+      setActiveUsers(data);
     });
 
     // Cleanup on component unmount
-    // return () => {
-    //   socket.disconnect();
-    // };
-  }, []);
-
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        await getUserDataFunction();
-      } catch (error) {
-        console.log(error);
-        toast.error(error);
-        navigate("/login");
-      }
+    return () => {
+      socket.disconnect();
     };
-    getUserData();
   }, []);
 
   return (
