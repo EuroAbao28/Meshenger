@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const generateToken = require("../utils/generateToken");
+const cloudinary = require("../utils/cloudinary");
 
 const signUp = async (req, res) => {
   try {
@@ -56,8 +57,6 @@ const login = async (req, res) => {
     const isUserExist = await userModel.findOne({ username });
 
     if (isUserExist && (await bcrypt.compare(password, isUserExist.password))) {
-      // chang the status to true
-      isUserExist.status = true;
       isUserExist.save();
 
       return res.status(200).json({
@@ -80,13 +79,39 @@ const updateUser = async (req, res) => {
 
     const user = await userModel.findById(myId);
 
+    console.log(req.file);
+    // if the user uploaded an image
+    if (req.file) {
+      // if the user already have an image
+      if (user.imagePublicId) {
+        const cloudinaryResponse = await cloudinary.uploader.upload(
+          req.file.path,
+          { public_id: user.imagePublicId }
+        );
+
+        console.log("Update old image");
+        user.imageUrl = cloudinaryResponse.secure_url;
+      } else {
+        // if the user has no image
+        const cloudinaryResponse = await cloudinary.uploader.upload(
+          req.file.path,
+          { folder: "Meshenger/User" }
+        );
+
+        console.log("New image");
+
+        user.imageUrl = cloudinaryResponse.secure_url;
+        user.imagePublicId = cloudinaryResponse.public_id;
+      }
+    }
+
     user.firstname = firstname.trim() || user.firstname;
     user.lastname = lastname.trim() || user.lastname;
     user.username = username.trim() || user.username;
 
-    await user.save();
+    const response = await user.save();
 
-    return res.status(201).json({ message: "Update successfully" });
+    return res.status(201).json({ message: "Update successfully", response });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

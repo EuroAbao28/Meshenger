@@ -34,16 +34,16 @@ let onlineUsers = [];
 
 // socket io events
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  // console.log("A user connected");
 
   // handle login event
   socket.on("login", (username) => {
-    console.log(`${username} logged in`);
+    // console.log(`${username} logged in`);
 
     if (!Object.values(onlineUsers).includes(username)) {
       onlineUsers[socket.id] = username;
       io.emit("updatedStatus", Object.values(onlineUsers));
-      console.log(onlineUsers);
+      // console.log(onlineUsers);
     } else {
       console.log(`${username} is already logged in`);
     }
@@ -52,13 +52,13 @@ io.on("connection", (socket) => {
   // when someone join a room
   socket.on("joinRoom", (data) => {
     socket.join(data);
-    console.log("Someone joined room:", data);
+    // console.log("Someone joined room:", data);
   });
 
   // when someone leave a room
   socket.on("leaveRoom", (data) => {
     socket.leave(data);
-    console.log("Someone leave room:", data);
+    // console.log("Someone leave room:", data);
   });
 
   // when someone send
@@ -74,10 +74,10 @@ io.on("connection", (socket) => {
 
   // handle disconnect
   socket.on("disconnect", () => {
-    console.log("User disconnect");
+    // console.log("User disconnect");
     delete onlineUsers[socket.id];
     io.emit("updatedStatus", Object.values(onlineUsers));
-    console.log(onlineUsers);
+    // console.log(onlineUsers);
   });
 });
 

@@ -15,6 +15,7 @@ import { socket } from "./Layout";
 import myRingTone from "../assets/myRingTone.mp3";
 import TimeAgo from "timeago-react";
 import * as timeago from "timeago.js";
+import classNames from "classnames";
 
 // Define a custom locale with short formats
 const customLocale = (number, index, totalSec) =>
@@ -39,6 +40,7 @@ const customLocale = (number, index, totalSec) =>
 timeago.register("short", customLocale);
 
 function FriendsList() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [audio] = useState(new Audio(myRingTone));
   const { setIsSideMenuOpen } = useStatesContext();
@@ -56,6 +58,8 @@ function FriendsList() {
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [showResult, setShowResult] = useState(false);
+
+  const [messageRequests, setMessageRequests] = useState([]);
 
   // search onChange
   const handleOnChange = (e) => {
@@ -142,9 +146,13 @@ function FriendsList() {
   useEffect(() => {
     socket.on("receiveNotif", (data) => {
       if (data.receiver === user._id) {
+        console.log("Message Resib", data.receiver, user._id);
         setToggleGetLatesMessage((prev) => prev + 1);
 
         audio.play().catch((err) => console.error("Error playing audio:", err));
+
+        // put it the message request
+        setMessageRequests(data);
       }
     });
   }, []);
@@ -167,19 +175,26 @@ function FriendsList() {
           <div
             tabIndex={0}
             role="button"
-            className="p-2 rounded-full cursor-pointer hover:bg-slate-100 ">
+            className="relative p-2 rounded-full cursor-pointer hover:bg-slate-100 ">
+            {messageRequests.username && (
+              <span className="absolute w-2 bg-red-500 rounded-full right-2 top-2 aspect-square"></span>
+            )}
             <LuBell className="text-2xl" />
           </div>
-          <ul
-            tabIndex={0}
-            className="z-20 p-2 mt-2 bg-white outline outline-1 outline-slate-200 rounded shadow w-[16rem] sm:w-[20rem] md:w-[16rem] dropdown-content menu lg:w-[20rem]">
-            <li>
-              <a>Item 1</a>
-            </li>
-            <li>
-              <a>Item 2</a>
-            </li>
-          </ul>
+          <div className="z-20 p-4 mt-2 bg-white outline outline-1 outline-slate-200 rounded shadow w-[20rem] sm:w-[20rem] md:w-[16rem] dropdown-content menu lg:w-[20rem]">
+            <h1 className="text-lg font-semibold">Message Requests</h1>
+            <div className="flex gap-2 mt-4 bg-white">
+              <img
+                src={user.imageUrl}
+                alt=""
+                className="object-cover w-12 rounded-full aspect-square"
+              />
+              <div className="flex flex-col">
+                <h3 className="font-semibold">{user.username}</h3>
+                <p>Oy pre musta</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -206,46 +221,59 @@ function FriendsList() {
       </form>
 
       {/* friends list */}
+
       <div className="relative flex-1">
         {!showResult ? (
           <div className="absolute inset-0 p-2 overflow-y-auto">
-            {user.contacts.map((contact) => (
-              <div
-                key={contact.username}
-                onClick={() => handleSelectUserToChat(contact._id)}
-                className="flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100">
-                <div className="relative w-12">
-                  {activeUsers.includes(contact.username) && (
-                    <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
-                  )}
-                  <img
-                    src={userImage}
-                    alt="user image"
-                    className="w-full rounded-full aspect-square"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold line-clamp-1">
-                    {`${contact.firstname} ${contact.lastname}`}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm line-clamp-1">
-                      {user._id === latestMessage[contact._id]?.sender &&
-                        "You: "}
-                      {latestMessage[contact._id]?.content || "No messages yet"}
-                    </p>
-                    {latestMessage[contact._id]?.content && (
-                      <div className="text-xs text-nowrap text-slate-500">
-                        <TimeAgo
-                          datetime={latestMessage[contact._id]?.createdAt}
-                          locale="short"
-                        />
+            {user.contacts.length > 0 ? (
+              <>
+                {user.contacts.map((contact) => (
+                  <div
+                    key={contact.username}
+                    onClick={() => handleSelectUserToChat(contact._id)}
+                    className={classNames(
+                      "flex items-center gap-4 p-2 cursor-pointer hover:bg-slate-100",
+                      {
+                        "bg-slate-100": contact._id === id,
+                      }
+                    )}>
+                    <div className="relative w-12">
+                      {activeUsers.includes(contact.username) && (
+                        <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                      )}
+                      <img
+                        src={contact.imageUrl || userImage}
+                        alt="user image"
+                        className="object-cover w-full rounded-full aspect-square"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold line-clamp-1">
+                        {`${contact.firstname} ${contact.lastname}`}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm line-clamp-1">
+                          {user._id === latestMessage[contact._id]?.sender &&
+                            "You: "}
+                          {latestMessage[contact._id]?.content ||
+                            "No messages yet"}
+                        </p>
+                        {latestMessage[contact._id]?.content && (
+                          <div className="text-xs text-nowrap text-slate-500">
+                            <TimeAgo
+                              datetime={latestMessage[contact._id]?.createdAt}
+                              locale="short"
+                            />
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            ) : (
+              <div className="text-center text-slate-400">No contacts</div>
+            )}
           </div>
         ) : (
           <div className="absolute inset-0 p-2 overflow-y-auto">
@@ -271,9 +299,9 @@ function FriendsList() {
                             <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
                           )}
                           <img
-                            src={userImage}
+                            src={user.imageUrl || userImage}
                             alt="user image"
-                            className="w-full rounded-full aspect-square"
+                            className="object-cover w-full rounded-full aspect-square"
                           />
                         </div>
                         <div className="flex-1">

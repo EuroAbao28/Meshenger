@@ -49,9 +49,9 @@ function SideMenu() {
         )}>
         <div className="flex gap-3 mb-4">
           <img
-            src={userImage}
+            src={user.imageUrl || userImage}
             alt="user image"
-            className="w-12 aspect-square"
+            className="object-cover w-12 rounded-full aspect-square"
           />
           <div className="flex-1">
             <h3 className="font-semibold">{`${user.firstname} ${user.lastname}`}</h3>

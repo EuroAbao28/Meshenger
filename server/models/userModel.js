@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   password: { type: String, required: true },
-  status: { type: Boolean, default: false },
+  imageUrl: { type: String, default: "" },
+  imagePublicId: { type: String, default: "" },
   contacts: [
     {
       type: mongoose.Schema.Types.ObjectId,

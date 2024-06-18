@@ -16,6 +16,7 @@ import useGetMessages from "../hooks/useGetMessages";
 import { useUserContext } from "../context/UserContextProvider";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { MdWavingHand } from "react-icons/md";
 
 function Conversation() {
   const { id } = useParams();
@@ -129,6 +130,8 @@ function Conversation() {
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
+    if (!messageInput) return console.log("no message");
+
     try {
       const userToken = localStorage.getItem("userToken");
       const response = await axios.post(
@@ -237,9 +240,9 @@ function Conversation() {
                   <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
                 )}
                 <img
-                  src={userImage}
+                  src={userToChat.imageUrl || userImage}
                   alt="user image"
-                  className="w-full rounded-full aspect-square"
+                  className="object-cover w-full rounded-full aspect-square"
                 />
               </div>
               <h3 className="text-lg font-semibold">{`${userToChat.firstname} ${userToChat.lastname}`}</h3>
@@ -278,36 +281,44 @@ function Conversation() {
           <div className="flex-1 ">
             <div className="relative w-full h-full overflow-x-hidden overflow-y-auto">
               <div className="absolute inset-0 ">
-                {messages &&
-                  messages.map((message, index) => (
-                    <div
-                      ref={messagesEndScroller}
-                      key={index}
-                      className={classNames("chat px-2", {
-                        "chat-start  ": id === message.sender,
-                        "chat-end ": id !== message.sender,
-                      })}>
+                {messages.length > 0 ? (
+                  <>
+                    {messages.map((message, index) => (
                       <div
-                        onClick={() => handleToggleDate(message._id)}
-                        className={classNames("chat-bubble", {
-                          "bg-slate-100 ": id === message.sender,
-                          "text-white bg-sky-500 place-self-end":
-                            id !== message.sender,
+                        ref={messagesEndScroller}
+                        key={index}
+                        className={classNames("chat px-2", {
+                          "chat-start  ": id === message.sender,
+                          "chat-end ": id !== message.sender,
                         })}>
-                        {message.content}
+                        <div
+                          onClick={() => handleToggleDate(message._id)}
+                          className={classNames("chat-bubble", {
+                            "bg-slate-100 ": id === message.sender,
+                            "text-white bg-sky-500 place-self-end":
+                              id !== message.sender,
+                          })}>
+                          {message.content}
+                        </div>
+                        <div
+                          className={classNames(
+                            "chat-footer  mt-1 transition-all text-slate-400 overflow-hidden",
+                            {
+                              "h-0": isDateShown !== message._id,
+                              "h-5": isDateShown === message._id,
+                            }
+                          )}>
+                          <TimeAgo datetime={message.createdAt} />
+                        </div>
                       </div>
-                      <div
-                        className={classNames(
-                          "chat-footer  mt-1 transition-all text-slate-400 overflow-hidden",
-                          {
-                            "h-0": isDateShown !== message._id,
-                            "h-5": isDateShown === message._id,
-                          }
-                        )}>
-                        <TimeAgo datetime={message.createdAt} />
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-full gap-3 text-slate-400">
+                    <p className="text-lg ">Say Hi</p>
+                    <MdWavingHand className="text-3xl animate-wiggle" />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -339,7 +350,7 @@ function Conversation() {
               />
               <button
                 type="submit"
-                className="flex items-center justify-center w-10 text-lg text-white rounded-full bg-sky-500 aspect-square">
+                className="flex items-center justify-center w-10 text-lg text-white transition-all rounded-full bg-sky-500 aspect-square active:scale-95">
                 <BiSolidSend />
               </button>
             </form>

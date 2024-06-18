@@ -9,6 +9,15 @@ export default {
         "20rem": "20rem 1fr",
         "24rem": "24rem 1fr",
       },
+      animation: {
+        wiggle: "wiggle .5s ease-in-out infinite",
+      },
+      keyframes: {
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-5deg)" },
+          "50%": { transform: "rotate(5deg)" },
+        },
+      },
     },
   },
   plugins: [require("daisyui")],

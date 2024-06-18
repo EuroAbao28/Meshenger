@@ -7,6 +7,8 @@ import classNames from "classnames";
 import axios from "axios";
 import { userRoute } from "../utils/APIRoutes";
 import toast from "react-hot-toast";
+import { socket } from "../components/Layout";
+import useUpdateUser from "../hooks/useUpdateUser";
 
 function MyProfile() {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ function MyProfile() {
   const [isEditShow, setIsEditShow] = useState(false);
   const [user, setUser] = useState({});
   const [editUser, setEditUser] = useState({});
-  const [isSaveLoading, setIsSaveLoading] = useState(false);
+  const { updateUserFunciton, isUserUpdateLoading } = useUpdateUser();
 
   const getUserData = async () => {
     try {
@@ -27,6 +29,9 @@ function MyProfile() {
 
       setUser(response.data.user);
       setEditUser(response.data.user);
+
+      socket.emit("login", response.data.user.username);
+
       setIsPageLoading(false);
     } catch (error) {
       console.log(error);
@@ -35,40 +40,53 @@ function MyProfile() {
   };
 
   useEffect(() => {
+    socket.connect();
+
     getUserData();
+
+    // Cleanup on component unmount
+    return () => {
+      socket.disconnect();
+    };
   }, []);
+
+  // fix this
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditUser((prev) => ({
+        ...prev,
+        userImage: file,
+        imageUrl: URL.createObjectURL(file),
+      }));
+    } else {
+      setEditUser((prev) => ({
+        ...prev,
+        userImage: null,
+        imageUrl: user.imageUrl,
+      }));
+    }
+  };
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
-    setIsSaveLoading(true);
     try {
-      console.log(editUser);
+      const response = await updateUserFunciton(editUser);
 
-      const userToken = localStorage.getItem("userToken");
-      const response = await axios.patch(
-        `${userRoute}/${user._id}`,
-        {
-          firstname: editUser.firstname,
-          lastname: editUser.lastname,
-          username: editUser.username,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      setIsSaveLoading(false);
       setIsEditShow(false);
-      getUserData();
+      setUser(editUser);
 
-      console.log(response.data);
+      // console.log(response.data);
       toast.success(response.data.message);
     } catch (error) {
+      toast.error(error);
       console.log(error);
-      toast.error(error.response.data.message);
     }
+  };
+
+  const handleCancelEdit = () => {
+    setEditUser(user);
+    setIsEditShow(false);
   };
 
   return (
@@ -82,9 +100,9 @@ function MyProfile() {
         </div>
       ) : (
         <div className="flex justify-center w-screen h-svh text-slate-700">
-          <div className="   w-[58rem] flex flex-col">
+          <div className="w-[58rem] flex flex-col  ">
             {/* header */}
-            <div className="flex items-center gap-2 p-4 md:gap-4 md:pt-12">
+            <div className="flex items-center w-full gap-2 p-4 md:gap-4 md:pt-12 ">
               <div
                 onClick={() => navigate("/")}
                 className="p-2 text-lg rounded-full cursor-pointer md:text-4xl sm:text-2xl hover:bg-slate-100">
@@ -98,7 +116,7 @@ function MyProfile() {
             {/* edit warnign */}
             <div
               className={classNames(
-                "flex items-center gap-2 px-4 py-2 text-orange-500 transition-all bg-orange-100",
+                "flex items-center gap-2 px-4 py-2 w-full text-orange-500 transition-all bg-orange-100",
                 {
                   "opacity-0 h-0": !isEditShow,
                   "opacity-100 h-12": isEditShow,
@@ -110,11 +128,11 @@ function MyProfile() {
 
             {/* body */}
             {isEditShow ? (
-              <div className="flex-1 gap-6 p-4 pt-6 md:flex md:pt-12 ">
+              <div className="flex-1 w-full gap-6 p-4 pt-6 md:flex md:pt-12">
                 <img
-                  src={userImage}
+                  src={editUser.imageUrl || userImage}
                   alt="user image"
-                  className="object-contain w-48 mx-auto rounded-full md:m-0 aspect-square md:w-60 place-self-start"
+                  className="object-cover w-48 mx-auto rounded-full md:m-0 aspect-square md:w-60 place-self-start"
                 />
                 <form
                   onSubmit={handleSaveEdit}
@@ -157,24 +175,32 @@ function MyProfile() {
                       />
                     </div>
                     <div className="flex flex-col gap-1 ">
-                      <p className="text-sm text-slate-400">Password</p>
-                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                        ••••••••••••
-                      </p>
+                      <p className="text-sm text-slate-400">Profile Image</p>
+
+                      <div className="flex items-center w-full h-full p-2 rounded sm:p-0 sm:px-2 outline outline-1 outline-slate-300 focus-within:outline-sky-500 focus-within:outline-2">
+                        <input
+                          name="image"
+                          id="image"
+                          type="file"
+                          accept="image/jpeg,image/png"
+                          onChange={handleFileChange}
+                          className="focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto">
                     <button
-                      onClick={() => setIsEditShow(false)}
+                      onClick={handleCancelEdit}
                       type="button"
                       className="flex-1 px-4 py-2 rounded outline outline-2 text-nowrap text-sky-500 outline-sky-500 focus:outline-sky-500 focus:outline-2">
                       Cancel
                     </button>
                     <button
-                      disabled={isSaveLoading}
+                      disabled={isUserUpdateLoading}
                       type="submit"
                       className="flex items-center justify-center flex-1 gap-2 px-4 py-2 text-white bg-green-500 rounded text-nowrap">
-                      {isSaveLoading ? (
+                      {isUserUpdateLoading ? (
                         <>
                           <span className="loading loading-spinner loading-sm"></span>
                           Saving
@@ -187,11 +213,11 @@ function MyProfile() {
                 </form>
               </div>
             ) : (
-              <div className="flex-1 gap-6 p-4 pt-6 md:flex md:pt-12 ">
+              <div className="flex-1 w-full gap-6 p-4 pt-6 md:flex md:pt-12">
                 <img
-                  src={userImage}
+                  src={user.imageUrl || userImage}
                   alt="user image"
-                  className="object-contain w-48 mx-auto rounded-full md:m-0 aspect-square md:w-60 place-self-start"
+                  className="object-cover w-48 mx-auto rounded-full md:m-0 aspect-square md:w-60 place-self-start"
                 />
                 <div className="flex-1 mt-6 bg-white md:mt-0">
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -219,14 +245,14 @@ function MyProfile() {
                     </div>
 
                     <div className="flex flex-col gap-1 ">
-                      <p className="text-sm text-slate-400">Password</p>
+                      <p className="text-sm text-slate-400">Profile Image</p>
 
-                      <p className="p-2 px-4 rounded outline outline-1 outline-slate-300">
-                        ••••••••••••
+                      <p className="p-2 truncate rounded outline outline-1 outline-slate-300">
+                        {user.imageUrl || "None"}
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto">
+                  <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto md:pl-3">
                     <button className="flex-1 py-2 text-white bg-red-500 rounded">
                       Delete
                     </button>
