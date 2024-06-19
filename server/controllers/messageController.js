@@ -18,7 +18,7 @@ const sendMessage = async (req, res) => {
       receiver: id,
     });
 
-    return res.status(201).json({ response });
+    return res.status(201).json(response);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

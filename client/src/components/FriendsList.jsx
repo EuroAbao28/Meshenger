@@ -46,6 +46,7 @@ function FriendsList() {
   const { setIsSideMenuOpen } = useStatesContext();
   const {
     user,
+    latestMessages,
     toggleGetLatestMessage,
     setToggleGetLatesMessage,
     activeUsers,
@@ -138,16 +139,16 @@ function FriendsList() {
     }
   };
 
-  // get latst message
-  useEffect(() => {
-    getLatestMessageFunction();
-  }, [, toggleGetLatestMessage]);
+  // useEffect(() => {
+  //   console.log(latestMessages);
+  // }, [latestMessages]);
 
   useEffect(() => {
+    getLatestMessageFunction();
+
     socket.on("receiveNotif", (data) => {
       if (data.receiver === user._id) {
-        console.log("Message Resib", data.receiver, user._id);
-        setToggleGetLatesMessage((prev) => prev + 1);
+        // console.log("Message Resib", data.receiver, user._id);
 
         audio.play().catch((err) => console.error("Error playing audio:", err));
 
@@ -253,19 +254,25 @@ function FriendsList() {
                       </h3>
                       <div className="flex items-center gap-2">
                         <p className="text-sm line-clamp-1">
-                          {user._id === latestMessage[contact._id]?.sender &&
-                            "You: "}
-                          {latestMessage[contact._id]?.content ||
+                          {user._id ===
+                            (latestMessages &&
+                              latestMessages[contact._id]?.sender) && "You: "}
+                          {(latestMessages &&
+                            latestMessages[contact._id]?.content) ||
                             "No messages yet"}
                         </p>
-                        {latestMessage[contact._id]?.content && (
-                          <div className="text-xs text-nowrap text-slate-500">
-                            <TimeAgo
-                              datetime={latestMessage[contact._id]?.createdAt}
-                              locale="short"
-                            />
-                          </div>
-                        )}
+                        {latestMessages &&
+                          latestMessages[contact._id]?.content && (
+                            <div className="text-xs text-nowrap text-slate-500">
+                              <TimeAgo
+                                datetime={
+                                  latestMessages &&
+                                  latestMessages[contact._id]?.createdAt
+                                }
+                                locale="short"
+                              />
+                            </div>
+                          )}
                       </div>
                     </div>
                   </div>

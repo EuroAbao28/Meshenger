@@ -22,7 +22,13 @@ function Conversation() {
   const { id } = useParams();
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
-  const { user, setToggleGetLatesMessage, activeUsers } = useUserContext();
+  const {
+    user,
+    setLatestMessages,
+    setUser,
+    setToggleGetLatesMessage,
+    activeUsers,
+  } = useUserContext();
 
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
@@ -147,22 +153,18 @@ function Conversation() {
 
       // add the roomId
       const messageData = {
-        ...response.data.response,
+        ...response.data,
         roomId,
       };
-
-      // console.log(messageData);
 
       // emit the sent message
       socket.emit("sendMessage", messageData);
       socket.emit("sendNotif", messageData);
 
-      setMessages((prev) => [...prev, response.data.response]);
+      setLatestMessages((prev) => ({ ...prev, [id]: response.data }));
+
+      setMessages((prev) => [...prev, response.data]);
       setMessageInput("");
-
-      setToggleGetLatesMessage((prev) => prev + 1);
-
-      // set latest chat
     } catch (error) {
       console.log(error);
     }
@@ -197,9 +199,10 @@ function Conversation() {
   // for receiving message from socket.io
   useEffect(() => {
     socket.on("receiveMessage", (data) => {
+      // console.log(data);
       setMessages((prev) => [...prev, data]);
 
-      setToggleGetLatesMessage((prev) => prev + 1);
+      setLatestMessages((prev) => ({ ...prev, [id]: data }));
     });
   }, []);
 

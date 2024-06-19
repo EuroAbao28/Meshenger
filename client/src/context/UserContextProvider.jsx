@@ -8,16 +8,16 @@ export const useUserContext = () => useContext(UserContext);
 // Provider component
 export const UseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [latestMessages, setLatestMessages] = useState({});
   const [activeUsers, setActiveUsers] = useState([]);
-  const [toggleGetLatestMessage, setToggleGetLatesMessage] = useState(1);
 
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
-        toggleGetLatestMessage,
-        setToggleGetLatesMessage,
+        latestMessages,
+        setLatestMessages,
         activeUsers,
         setActiveUsers,
       }}>

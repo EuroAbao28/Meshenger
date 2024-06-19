@@ -4,15 +4,16 @@ import axios from "axios";
 import { messageRoute } from "../utils/APIRoutes";
 
 const useGetLatestMessage = () => {
-  const { user } = useUserContext();
+  const { user, setLatestMessages } = useUserContext();
 
   const [latestMessage, setLatestMessage] = useState({});
-  const [isGetLatestMessageLoading, setIsGetLatestMessageLoading] = useState(1);
+  const [isGetLatestMessageLoading, setIsGetLatestMessageLoading] =
+    useState(true);
 
   const getLatestMessageFunction = async () => {
     try {
       const userToken = localStorage.getItem("userToken");
-      const newLatestMessages = {};
+      const newLatestMessages = [];
       for (const contact of user.contacts) {
         const response = await axios.get(
           `${messageRoute}/getLatestMessage/${contact._id}`,
@@ -27,7 +28,10 @@ const useGetLatestMessage = () => {
         newLatestMessages[contact._id] = response.data;
       }
 
-      console.log("GET LATEST MESSAGE", newLatestMessages);
+      // console.log(newLatestMessages);
+
+      setLatestMessages(newLatestMessages);
+
       setLatestMessage(newLatestMessages);
       setIsGetLatestMessageLoading(false);
     } catch (error) {
