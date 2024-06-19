@@ -27,7 +27,7 @@ const useGetLatestMessage = () => {
         newLatestMessages[contact._id] = response.data;
       }
 
-      // console.log("GET LATEST MESSAGE", newLatestMessages);
+      console.log("GET LATEST MESSAGE", newLatestMessages);
       setLatestMessage(newLatestMessages);
       setIsGetLatestMessageLoading(false);
     } catch (error) {
