@@ -15,7 +15,7 @@ export const socket = io(host, { autoConnect: false });
 function Layout() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { user, setActiveUsers } = useUserContext();
+  const { user, latestMessages, setActiveUsers } = useUserContext();
 
   const { getUserDataFunction, isGetUserDataLoading } = useGetUserData();
 
@@ -50,6 +50,10 @@ function Layout() {
       socket.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    console.log("LAYOUT", user);
+  }, [user]);
 
   return (
     <>

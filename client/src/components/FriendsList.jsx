@@ -44,17 +44,12 @@ function FriendsList() {
   const navigate = useNavigate();
   const [audio] = useState(new Audio(myRingTone));
   const { setIsSideMenuOpen } = useStatesContext();
-  const {
-    user,
-    latestMessages,
-    toggleGetLatestMessage,
-    setToggleGetLatesMessage,
-    activeUsers,
-  } = useUserContext();
+  const { user, latestMessages, setLatestMessages, activeUsers } =
+    useUserContext();
 
   const { searchFunction, isSearchLoading } = useSearchUser();
   const { getUserDataFunction } = useGetUserData();
-  const { getLatestMessageFunction, latestMessage } = useGetLatestMessage();
+  const { getLatestMessageFunction } = useGetLatestMessage();
 
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -139,21 +134,24 @@ function FriendsList() {
     }
   };
 
-  // useEffect(() => {
-  //   console.log(latestMessages);
-  // }, [latestMessages]);
-
   useEffect(() => {
     getLatestMessageFunction();
+    // console.log("TRIGGER");
 
     socket.on("receiveNotif", (data) => {
       if (data.receiver === user._id) {
-        // console.log("Message Resib", data.receiver, user._id);
+        console.log(`From ${data.sender}, to ${data.receiver}`);
+        console.log(user.contacts);
+        setLatestMessages((prev) => ({ ...prev, [data.sender]: data }));
 
-        audio.play().catch((err) => console.error("Error playing audio:", err));
+        if (user.contacts.find((contact) => contact._id === data.sender)) {
+          console.log("meron");
+        }
+
+        // audio.play().catch((err) => console.error("Error playing audio:", err));
 
         // put it the message request
-        setMessageRequests(data);
+        // setMessageRequests(data);
       }
     });
   }, []);
@@ -186,7 +184,7 @@ function FriendsList() {
             <h1 className="text-lg font-semibold">Message Requests</h1>
             <div className="flex gap-2 mt-4 bg-white">
               <img
-                src={user.imageUrl}
+                src={user.imageUrl || userImage}
                 alt=""
                 className="object-cover w-12 rounded-full aspect-square"
               />
@@ -221,8 +219,9 @@ function FriendsList() {
         )}
       </form>
 
-      {/* friends list */}
+      <p className="text-center">{user._id}</p>
 
+      {/* friends list */}
       <div className="relative flex-1">
         {!showResult ? (
           <div className="absolute inset-0 p-2 overflow-y-auto">

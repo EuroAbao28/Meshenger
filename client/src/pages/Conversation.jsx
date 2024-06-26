@@ -22,13 +22,8 @@ function Conversation() {
   const { id } = useParams();
   const navigate = useNavigate();
   const messagesEndScroller = useRef(null);
-  const {
-    user,
-    setLatestMessages,
-    setUser,
-    setToggleGetLatesMessage,
-    activeUsers,
-  } = useUserContext();
+  const { user, setLatestMessages, setUser, latestMessages, activeUsers } =
+    useUserContext();
 
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
@@ -103,7 +98,12 @@ function Conversation() {
         }
       );
       toast.success(response.data.message);
-      getUserDataFunction();
+
+      // add the user in contacts locally
+      setUser((prev) => ({
+        ...prev,
+        contacts: [...prev.contacts, userToChat],
+      }));
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -125,7 +125,13 @@ function Conversation() {
       );
 
       toast.success(response.data.message);
-      getUserDataFunction();
+
+      // update user contacts locally
+      const updatedContacts = user.contacts.filter(
+        (contact) => contact._id !== id
+      );
+
+      setUser((prev) => ({ ...prev, contacts: updatedContacts }));
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -199,7 +205,6 @@ function Conversation() {
   // for receiving message from socket.io
   useEffect(() => {
     socket.on("receiveMessage", (data) => {
-      // console.log(data);
       setMessages((prev) => [...prev, data]);
 
       setLatestMessages((prev) => ({ ...prev, [id]: data }));

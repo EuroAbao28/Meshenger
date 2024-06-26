@@ -6,7 +6,7 @@ import { messageRoute } from "../utils/APIRoutes";
 const useGetLatestMessage = () => {
   const { user, setLatestMessages } = useUserContext();
 
-  const [latestMessage, setLatestMessage] = useState({});
+  // const [latestMessage, setLatestMessage] = useState({});
   const [isGetLatestMessageLoading, setIsGetLatestMessageLoading] =
     useState(true);
 
@@ -32,7 +32,7 @@ const useGetLatestMessage = () => {
 
       setLatestMessages(newLatestMessages);
 
-      setLatestMessage(newLatestMessages);
+      // setLatestMessage(newLatestMessages);
       setIsGetLatestMessageLoading(false);
     } catch (error) {
       console.log(error.response.data);
@@ -41,7 +41,7 @@ const useGetLatestMessage = () => {
     }
   };
 
-  return { getLatestMessageFunction, isGetLatestMessageLoading, latestMessage };
+  return { getLatestMessageFunction, isGetLatestMessageLoading };
 };
 
 export default useGetLatestMessage;
