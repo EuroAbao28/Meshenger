@@ -136,7 +136,6 @@ function FriendsList() {
 
   useEffect(() => {
     getLatestMessageFunction();
-    // console.log("TRIGGER");
 
     socket.on("receiveNotif", (data) => {
       if (data.receiver === user._id) {
@@ -144,9 +143,9 @@ function FriendsList() {
         console.log(user.contacts);
         setLatestMessages((prev) => ({ ...prev, [data.sender]: data }));
 
-        if (user.contacts.find((contact) => contact._id === data.sender)) {
-          console.log("meron");
-        }
+        // if (user.contacts.find((contact) => contact._id === data.sender)) {
+        //   console.log("meron");
+        // }
 
         // audio.play().catch((err) => console.error("Error playing audio:", err));
 
