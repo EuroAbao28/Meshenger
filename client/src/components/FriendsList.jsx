@@ -174,8 +174,6 @@ function FriendsList() {
   // theme toggle
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => !prevMode);
-
-    console.log("theme toggled");
   };
 
   return (

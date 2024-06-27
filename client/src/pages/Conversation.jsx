@@ -17,6 +17,7 @@ import { useUserContext } from "../context/UserContextProvider";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { MdWavingHand } from "react-icons/md";
+import { useStatesContext } from "../context/StatesContextProvider";
 
 function Conversation() {
   const { id } = useParams();
@@ -24,6 +25,7 @@ function Conversation() {
   const messagesEndScroller = useRef(null);
   const { user, setLatestMessages, setUser, latestMessages, activeUsers } =
     useUserContext();
+  const { isDarkMode } = useStatesContext();
 
   const [userToChat, setUserToChat] = useState({});
   const [messageInput, setMessageInput] = useState("");
@@ -381,8 +383,13 @@ function Conversation() {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1]  p-2 shadow bg-white dark:bg-neutral-900 rounded text-nowrap">
-                  <Picker data={data} onEmojiSelect={addEmoji} />
+                  className="dropdown-content z-[1] mb-4 outline outline-1 outline-white/10">
+                  <Picker
+                    data={data}
+                    onEmojiSelect={addEmoji}
+                    previewPosition="none"
+                    theme={`${isDarkMode ? "dark" : "light"}`}
+                  />
                 </ul>
               </div>
               <input
