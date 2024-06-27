@@ -68,11 +68,21 @@ function Conversation() {
         socket.emit("joinRoom", getRoom.data.roomId);
         setRoomId(getRoom.data.roomId);
       } catch (error) {
-        toast.error("Room id not found/created");
+        toast.error("Room id not found/created", {
+          style: {
+            background: isDarkMode && "#262626",
+            color: isDarkMode && "#F1F5F9",
+          },
+        });
         console.log(error);
       }
     } catch (error) {
-      toast.error(error);
+      toast.error(error, {
+        style: {
+          background: isDarkMode && "#262626",
+          color: isDarkMode && "#F1F5F9",
+        },
+      });
       console.log(error);
     }
   };
@@ -97,7 +107,12 @@ function Conversation() {
           },
         }
       );
-      toast.success(response.data.message);
+      toast.success(response.data.message, {
+        style: {
+          background: isDarkMode && "#262626",
+          color: isDarkMode && "#F1F5F9",
+        },
+      });
 
       // add the user in contacts locally
       setUser((prev) => ({
@@ -106,7 +121,12 @@ function Conversation() {
       }));
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.response.data.message, {
+        style: {
+          background: isDarkMode && "#262626",
+          color: isDarkMode && "#F1F5F9",
+        },
+      });
     }
   };
 
@@ -124,7 +144,12 @@ function Conversation() {
         }
       );
 
-      toast.success(response.data.message);
+      toast.success(response.data.message, {
+        style: {
+          background: isDarkMode && "#262626",
+          color: isDarkMode && "#F1F5F9",
+        },
+      });
 
       // update user contacts locally
       const updatedContacts = user.contacts.filter(
@@ -134,7 +159,12 @@ function Conversation() {
       setUser((prev) => ({ ...prev, contacts: updatedContacts }));
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.response.data.message, {
+        style: {
+          background: isDarkMode && "#262626",
+          color: isDarkMode && "#F1F5F9",
+        },
+      });
     }
   };
 
@@ -193,7 +223,12 @@ function Conversation() {
         const response = await getMessagesFunction(id);
         setMessages(response.data);
       } catch (error) {
-        toast.error(error);
+        toast.error(error, {
+          style: {
+            background: isDarkMode && "#262626",
+            color: isDarkMode && "#F1F5F9",
+          },
+        });
         console.log(error);
       }
     };
@@ -228,7 +263,7 @@ function Conversation() {
   };
 
   return (
-    <div className="z-10 flex flex-col w-full h-full bg-white md:rounded-lg">
+    <div className="z-10 flex flex-col w-full h-full bg-white dark:bg-neutral-900 md:rounded-lg">
       {isGetUserToChatLoading ? (
         <div className="flex items-center justify-center flex-1 gap-2 ">
           <span className="loading loading-spinner loading-sm"></span>
@@ -237,15 +272,15 @@ function Conversation() {
       ) : (
         <>
           {/* header */}
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b-4 border-slate-100">
-            <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100 md:hidden">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b-4 border-slate-100 dark:border-neutral-950">
+            <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100 md:hidden dark:hover:bg-neutral-800">
               <LuArrowLeft className="text-2xl" onClick={handleLeaveRoom} />
             </div>
 
             <div className="flex items-center gap-4 mr-auto">
               <div className="relative w-12">
                 {activeUsers.includes(userToChat.username) && (
-                  <span className="absolute top-0 right-0 w-3 bg-green-500 rounded-full aspect-square"></span>
+                  <span className="absolute top-0 right-0 w-3 rounded-full bg-custom-green aspect-square outline outline-2 outline-white dark:outline-neutral-900 "></span>
                 )}
                 <img
                   src={userToChat.imageUrl || userImage}
@@ -260,23 +295,23 @@ function Conversation() {
               <div
                 tabIndex={0}
                 role="button"
-                className="p-2 rounded-full cursor-pointer hover:bg-slate-100">
+                className="p-2 rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
                 <BsThreeDotsVertical className="text-2xl" />
               </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content z-[1]  p-2 shadow bg-white rounded text-nowrap">
+                className="dropdown-content z-[1]  p-2 shadow bg-white dark:bg-neutral-900 rounded text-nowrap">
                 {user.contacts.some((contact) => contact._id === id) ? (
                   <li
                     onClick={handleRemoveUser}
-                    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100">
+                    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
                     <LuUserX />
                     <a>Remove user</a>
                   </li>
                 ) : (
                   <li
                     onClick={handleAddUser}
-                    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100">
+                    className="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
                     <LuUserPlus />
                     <a>Add user</a>
                   </li>
@@ -302,15 +337,16 @@ function Conversation() {
                         <div
                           onClick={() => handleToggleDate(message._id)}
                           className={classNames("chat-bubble", {
-                            "bg-slate-100 ": id === message.sender,
-                            "text-white bg-sky-500 place-self-end":
+                            "bg-slate-100 dark:bg-neutral-700 ":
+                              id === message.sender,
+                            "text-white dark:text-slate-100 bg-sky-500 place-self-end":
                               id !== message.sender,
                           })}>
                           {message.content}
                         </div>
                         <div
                           className={classNames(
-                            "chat-footer  mt-1 transition-all text-slate-400 overflow-hidden",
+                            "chat-footer mt-1 transition-all dark:text-neutral-500 text-slate-400 overflow-hidden",
                             {
                               "h-0": isDateShown !== message._id,
                               "h-5": isDateShown === message._id,
@@ -322,7 +358,7 @@ function Conversation() {
                     ))}
                   </>
                 ) : (
-                  <div className="flex items-center justify-center h-full gap-3 text-slate-400">
+                  <div className="flex items-center justify-center h-full gap-3 text-slate-400 dark:text-neutral-600">
                     <p className="text-lg ">Say Hi</p>
                     <MdWavingHand className="text-3xl animate-wiggle" />
                   </div>
@@ -332,7 +368,7 @@ function Conversation() {
           </div>
 
           {/* user input */}
-          <div className="border-t-4 border-slate-100">
+          <div className="border-t-4 border-slate-100 dark:border-neutral-950">
             <form
               onSubmit={handleSendMessage}
               className="flex items-center gap-4 p-4">
@@ -340,12 +376,12 @@ function Conversation() {
                 <div
                   tabIndex={0}
                   role="button"
-                  className="p-2 text-2xl rounded-full cursor-pointer text-slate-500 hover:bg-slate-100">
+                  className="text-3xl rounded-full cursor-pointer text-slate-500 dark:text-neutral-600 ">
                   <BsFillEmojiSmileFill />
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1]  p-2 shadow bg-white rounded text-nowrap">
+                  className="dropdown-content z-[1]  p-2 shadow bg-white dark:bg-neutral-900 rounded text-nowrap">
                   <Picker data={data} onEmojiSelect={addEmoji} />
                 </ul>
               </div>
@@ -354,11 +390,11 @@ function Conversation() {
                 placeholder="Write a message"
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
-                className="flex-1 px-4 py-2 rounded-full outline outline-1 focus-within:outline-sky-500 outline-slate-300"
+                className="flex-1 px-4 py-2 rounded-full outline outline-1 focus-within:outline-sky-500 outline-slate-300 dark:bg-neutral-900 dark:outline-neutral-700"
               />
               <button
                 type="submit"
-                className="flex items-center justify-center w-10 text-lg text-white transition-all rounded-full bg-sky-500 aspect-square active:scale-95">
+                className="flex items-center justify-center w-10 text-lg text-white transition-all rounded-full dark:text-slate-100 bg-sky-500 aspect-square active:scale-95">
                 <BiSolidSend />
               </button>
             </form>

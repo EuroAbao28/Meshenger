@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      colors: {
+        "custom-green": "#37ba36",
+      },
       gridTemplateColumns: {
         noFriendsList: "0 1fr",
         noConversation: "1fr 0",
@@ -24,4 +27,5 @@ export default {
   daisyui: {
     themes: [],
   },
+  darkMode: "class",
 };

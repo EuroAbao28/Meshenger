@@ -5,7 +5,7 @@ function Welcome() {
   const { user } = useUserContext();
 
   return (
-    <div className="flex-col items-center justify-center hidden p-4 bg-white md:rounded-lg md:flex text-slate-400">
+    <div className="flex-col items-center justify-center hidden p-4 bg-white md:rounded-lg md:flex text-slate-400 dark:bg-neutral-900 dark:text-slate-500">
       <h1 className="text-2xl">
         Welcome{" "}
         <span className="font-semibold text-sky-500">{user.username}</span>

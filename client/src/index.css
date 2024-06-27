@@ -9,3 +9,10 @@
     font-family: "Poppins", sans-serif;
   }
 }
+
+/* scrollbar.css */
+/* Works on Firefox */
+* {
+  scrollbar-color: rgba(155, 155, 155, 0.5) rgba(0, 0, 0, 0.1);
+  scrollbar-width: thin;
+}

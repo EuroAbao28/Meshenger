@@ -34,14 +34,17 @@ function SideMenu() {
     <>
       <div
         onClick={() => setIsSideMenuOpen(false)}
-        className={classnames("absolute inset-0 z-40 bg-black/20", {
-          block: isSideMenuOpen,
-          hidden: !isSideMenuOpen,
-        })}></div>
+        className={classnames(
+          "absolute inset-0 z-40 bg-black/20 dark:bg-black/70",
+          {
+            block: isSideMenuOpen,
+            hidden: !isSideMenuOpen,
+          }
+        )}></div>
 
       <div
         className={classnames(
-          "absolute inset-0 w-4/5 z-50 transition-all bg-white duration-500 flex flex-col ease-in-out sm:w-2/5 md:w-[20rem] p-4 md:p-6",
+          "absolute inset-0 w-4/5 z-50 transition-all bg-white dark:bg-neutral-900 duration-500 flex flex-col ease-in-out sm:w-2/5 md:w-[20rem] p-4 md:p-6",
           {
             "-left-full": !isSideMenuOpen,
             "left-0": isSideMenuOpen,
@@ -61,19 +64,19 @@ function SideMenu() {
 
         <div
           onClick={() => handleNavigate("/profile")}
-          className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100">
+          className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
           <LuUser className="text-lg" />
           My Profile
         </div>
 
-        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100">
+        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
           <LuSettings2 className="text-lg" />
           Settings
         </div>
 
         <div
           onClick={handleLogout}
-          className="flex items-center gap-4 p-2 text-red-500 rounded cursor-pointer hover:bg-slate-100">
+          className="flex items-center gap-4 p-2 text-red-500 rounded cursor-pointer dark:hover:bg-neutral-800 hover:bg-slate-100">
           <LuLogOut className="text-lg" />
           Logout
         </div>
