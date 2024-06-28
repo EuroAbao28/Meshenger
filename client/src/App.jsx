@@ -14,6 +14,7 @@ import Conversation from "./pages/Conversation";
 import { Toaster } from "react-hot-toast";
 import { UseProvider } from "./context/UserContextProvider";
 import MyProfile from "./pages/MyProfile";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="profile" element={<MyProfile />} />
+              <Route path="about" element={<About />} />
             </Routes>
           </Router>
         </StatesProvider>

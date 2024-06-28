@@ -42,7 +42,7 @@ function Layout() {
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("Connected to socket.io server");
+      // console.log("Connected to socket.io server");
     });
 
     getUserData();

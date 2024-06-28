@@ -33,7 +33,6 @@ function Conversation() {
   const [roomId, setRoomId] = useState("");
   const [isDateShown, setIsdDateShown] = useState("");
 
-  const { getUserDataFunction } = useGetUserData();
   const {
     getUserToChatFuntion,
     isGetUserToChatLoading,
@@ -275,7 +274,7 @@ function Conversation() {
         <>
           {/* header */}
           <div className="flex items-center justify-between gap-2 px-4 py-3 border-b-4 border-slate-100 dark:border-neutral-950">
-            <div className="p-2 rounded-full cursor-pointer hover:bg-slate-100 md:hidden dark:hover:bg-neutral-800">
+            <div className="p-2 transition-all rounded-full cursor-pointer hover:bg-slate-100 md:hidden dark:hover:bg-neutral-800 active:scale-90">
               <LuArrowLeft className="text-2xl" onClick={handleLeaveRoom} />
             </div>
 
@@ -290,14 +289,14 @@ function Conversation() {
                   className="object-cover w-full rounded-full aspect-square"
                 />
               </div>
-              <h3 className="text-lg font-semibold">{`${userToChat.firstname} ${userToChat.lastname}`}</h3>
+              <h3 className="text-lg font-semibold leading-none line-clamp-1">{`${userToChat.firstname} ${userToChat.lastname}`}</h3>
             </div>
 
             <div className="dropdown dropdown-bottom dropdown-end">
               <div
                 tabIndex={0}
                 role="button"
-                className="p-2 rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
+                className="p-2 rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800 active:scale-90">
                 <BsThreeDotsVertical className="text-2xl" />
               </div>
               <ul
@@ -378,12 +377,12 @@ function Conversation() {
                 <div
                   tabIndex={0}
                   role="button"
-                  className="text-3xl rounded-full cursor-pointer text-slate-500 dark:text-neutral-600 ">
+                  className="text-3xl rounded-full cursor-pointer text-slate-500 dark:text-neutral-600 active:scale-90">
                   <BsFillEmojiSmileFill />
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1] mb-4 outline outline-1 outline-white/10">
+                  className="dropdown-content z-[1] mb-4 outline outline-1 outline-white/10 ">
                   <Picker
                     data={data}
                     onEmojiSelect={addEmoji}

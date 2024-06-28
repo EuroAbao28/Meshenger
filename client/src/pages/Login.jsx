@@ -84,7 +84,7 @@ function Login() {
           />
           <button
             type="submit"
-            className="flex items-center justify-center w-full gap-2 px-4 py-2 mt-6 font-semibold text-white transition-all rounded outline outline-1 dark:outline-neutral-700 outline-slate-300 focus:outline-sky-500 dark:focus:outline-sky-500 focus:outline-2 bg-sky-500 active:bg-sky-600">
+            className="flex items-center justify-center w-full gap-2 px-4 py-2 mt-6 font-semibold text-white transition-all rounded outline outline-1 dark:outline-neutral-700 outline-slate-300 focus:outline-sky-500 dark:focus:outline-sky-500 focus:outline-2 bg-sky-500 active:bg-sky-600 active:scale-95 ">
             {isLoading ? (
               <>
                 <span className="loading loading-spinner loading-sm"></span>

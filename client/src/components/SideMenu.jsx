@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import { useStatesContext } from "../context/StatesContextProvider";
 import userImage from "../assets/user.png";
-import { LuUser, LuSettings2, LuLogOut } from "react-icons/lu";
+import { LuUser, LuSettings2, LuLogOut, LuInfo } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/UserContextProvider";
 import toast from "react-hot-toast";
@@ -69,9 +69,11 @@ function SideMenu() {
           My Profile
         </div>
 
-        <div className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
-          <LuSettings2 className="text-lg" />
-          Settings
+        <div
+          onClick={() => navigate("about")}
+          className="flex items-center gap-4 p-2 rounded cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
+          <LuInfo className="text-lg" />
+          About
         </div>
 
         <div

@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import { socket } from "../components/Layout";
 import useUpdateUser from "../hooks/useUpdateUser";
 import { useStatesContext } from "../context/StatesContextProvider";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function MyProfile() {
   const navigate = useNavigate();
@@ -42,6 +44,9 @@ function MyProfile() {
   };
 
   useEffect(() => {
+    // for animation
+    AOS.init();
+
     socket.connect();
 
     getUserData();
@@ -99,6 +104,16 @@ function MyProfile() {
   const handleCancelEdit = () => {
     setEditUser(user);
     setIsEditShow(false);
+  };
+
+  const handleDelete = () => {
+    toast.error("No you can't 😂", {
+      icon: "😂",
+      style: {
+        background: isDarkMode && "#262626",
+        color: isDarkMode && "#F1F5F9",
+      },
+    });
   };
 
   return (
@@ -203,13 +218,13 @@ function MyProfile() {
                     <button
                       onClick={handleCancelEdit}
                       type="button"
-                      className="flex-1 py-2 bg-white rounded dark:bg-neutral-950 hover:text-white dark:hover:bg-sky-500 dark:hover:text-slate-100 hover:bg-sky-500 text-sky-500 outline outline-2 outline-sky-500">
+                      className="flex-1 py-2 transition-all bg-white rounded dark:bg-neutral-950 hover:text-white dark:hover:bg-sky-500 dark:hover:text-slate-100 hover:bg-sky-500 text-sky-500 outline outline-2 outline-sky-500 active:scale-95">
                       Cancel
                     </button>
                     <button
                       disabled={isUserUpdateLoading}
                       type="submit"
-                      className="flex items-center justify-center flex-1 gap-2 px-4 py-2 text-white bg-green-500 rounded text-nowrap">
+                      className="flex items-center justify-center flex-1 gap-2 px-4 py-2 text-white transition-all bg-green-500 rounded text-nowrap active:scale-95">
                       {isUserUpdateLoading ? (
                         <>
                           <span className="loading loading-spinner loading-sm"></span>
@@ -223,7 +238,9 @@ function MyProfile() {
                 </form>
               </div>
             ) : (
-              <div className="flex-1 w-full gap-6 p-4 pt-6 md:flex md:pt-12">
+              <div
+                data-aos="fade-down"
+                className="flex-1 w-full gap-6 p-4 pt-6 md:flex md:pt-12">
                 <img
                   src={user.imageUrl || userImage}
                   alt="user image"
@@ -262,13 +279,15 @@ function MyProfile() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto md:pl-3">
-                    <button className="flex-1 py-2 text-white bg-red-500 rounded">
+                  <div className="flex gap-4 mt-6 md:w-1/2 md:ml-auto md:pl-3 ">
+                    <button
+                      onClick={handleDelete}
+                      className="flex-1 py-2 text-white transition-all bg-red-500 rounded active:scale-95">
                       Delete
                     </button>
                     <button
                       onClick={() => setIsEditShow(true)}
-                      className="flex-1 py-2 bg-white rounded dark:bg-neutral-950 hover:text-white dark:hover:bg-sky-500 dark:hover:text-slate-100 hover:bg-sky-500 text-sky-500 outline outline-2 outline-sky-500">
+                      className="flex-1 py-2 transition-all bg-white rounded dark:bg-neutral-950 hover:text-white dark:hover:bg-sky-500 dark:hover:text-slate-100 hover:bg-sky-500 text-sky-500 outline outline-2 outline-sky-500 active:scale-95">
                       Update
                     </button>
                   </div>

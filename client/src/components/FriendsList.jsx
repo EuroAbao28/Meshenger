@@ -55,8 +55,6 @@ function FriendsList() {
   const [searchResult, setSearchResult] = useState([]);
   const [showResult, setShowResult] = useState(false);
 
-  const [messageRequests, setMessageRequests] = useState([]);
-
   // search onChange
   const handleOnChange = (e) => {
     const { value } = e.target;
@@ -182,7 +180,7 @@ function FriendsList() {
       <div className="flex items-center justify-between gap-2 p-4">
         <div
           onClick={() => setIsSideMenuOpen(true)}
-          className="p-2 rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800">
+          className="p-2 transition-all rounded-full cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-800 active:scale-90">
           <LuMenu className="text-2xl" />
         </div>
         <div className="flex items-center gap-2">
@@ -191,7 +189,7 @@ function FriendsList() {
         </div>
 
         {/* theme toggle */}
-        <div className="flex items-center justify-center cursor-pointer ">
+        <div className="flex items-center justify-center transition-all cursor-pointer active:scale-90">
           <label className="grid items-center justify-center swap swap-rotate stack">
             {/* this hidden checkbox controls the state */}
             <input
@@ -286,7 +284,7 @@ function FriendsList() {
                             e.stopPropagation();
                             handleAddToContact(user);
                           }}
-                          className="p-2 text-xl rounded-full hover:bg-slate-200 dark:hover:bg-neutral-900">
+                          className="p-2 text-xl transition-all rounded-full hover:bg-slate-200 dark:hover:bg-neutral-900 active:scale-90">
                           <LuUserPlus />
                         </div>
                       </div>
