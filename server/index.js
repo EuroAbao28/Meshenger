@@ -25,7 +25,7 @@ app.use("/api/room", require("./routes/roomRoute"));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://meshenger.vercel.app",
     methods: ["GET", "POST"],
   },
 });
