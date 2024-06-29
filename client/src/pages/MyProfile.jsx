@@ -132,7 +132,7 @@ function MyProfile() {
             <div className="flex items-center w-full gap-2 p-4 md:gap-4 md:pt-12 ">
               <div
                 onClick={() => navigate("/")}
-                className="p-2 text-lg rounded-full cursor-pointer md:text-4xl sm:text-2xl dark:hover:bg-neutral-800 hover:bg-slate-100">
+                className="p-2 text-lg rounded-full cursor-pointer md:text-4xl sm:text-2xl dark:hover:bg-neutral-800 hover:bg-slate-100 active:scale-90">
                 <LuArrowLeft />
               </div>
               <h1 className="text-lg font-semibold sm:text-2xl md:text-5xl">
